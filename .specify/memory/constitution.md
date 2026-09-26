@@ -110,6 +110,16 @@ base mantiene paridad de funciones y reduce costos.
 - **Datos personales**: todo almacenamiento o transmisión de ubicación y contacto DEBE estar
   protegido en tránsito y en reposo, con acceso limitado al dueño y a los procesos que lo
   requieran.
+- **Transporte desde el hardware**: todo protocolo de rastreador que admita cifrado DEBE usarse
+  cifrado. Los protocolos de rastreador que no admiten cifrado (por ejemplo, TCP sin TLS) PUEDEN
+  usarse solo si se cumplen todas estas condiciones:
+  - el dispositivo transmite únicamente su identificador, posición, batería y estado, nunca
+    datos del dueño; la relación entre dispositivo y dueño existe solo en el servidor;
+  - el servidor rechaza datos de dispositivos no registrados;
+  - el servidor descarta datos físicamente imposibles (por ejemplo, saltos de velocidad
+    irreales) para mitigar suplantaciones;
+  - al elegir hardware se prefieren modelos con cifrado o conectividad privada, y el plan
+    documenta qué protocolos sin cifrado se aceptan.
 - **Página pública**: solo muestra los campos que el dueño autorizó; la dirección del domicilio
   está excluida del modelo de datos público.
 - **Internacionalización**: es-MX obligatorio; inglés preparado estructuralmente.
@@ -144,4 +154,4 @@ base mantiene paridad de funciones y reduce costos.
 - El cumplimiento se revisa al menos en cada nueva funcionalidad y al cambiar de proveedor de
   hardware o de infraestructura.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-25 | **Last Amended**: 2026-09-25
+**Version**: 1.1.0 | **Ratified**: 2026-09-25 | **Last Amended**: 2026-09-26
