@@ -8,8 +8,9 @@ import { deletePet, getPet, updatePet, uploadPhoto } from '@/api/pets';
 import { PetForm } from '@/components/pet-form';
 import { Button, ErrorText, Loading, Screen } from '@/components/ui';
 import { useQuery } from '@/hooks/use-query';
+import { OwnerOnly } from '@/components/owner-only';
 
-export default function EditPetScreen() {
+function EditPetScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: pet, error } = useQuery(() => getPet(id), [id]);
@@ -48,5 +49,14 @@ export default function EditPetScreen() {
       />
       <Button label={t('pets.delete')} variant="danger" onPress={confirmDelete} />
     </Screen>
+  );
+}
+
+export default function EditPetScreenGuarded() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return (
+    <OwnerOnly petId={id}>
+      <EditPetScreen />
+    </OwnerOnly>
   );
 }

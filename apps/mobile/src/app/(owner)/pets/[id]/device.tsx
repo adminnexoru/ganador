@@ -6,9 +6,10 @@ import { errorMessage } from '@/api/client';
 import { getDevice, linkDevice, unlinkDevice } from '@/api/pets';
 import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from '@/components/ui';
 import { useQuery } from '@/hooks/use-query';
+import { OwnerOnly } from '@/components/owner-only';
 
 /** Vincular el rastreador con su IMEI o el identificador de Traccar Client (FR-006). */
-export default function DeviceScreen() {
+function DeviceScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: device, loading, reload } = useQuery(() => getDevice(id), [id]);
@@ -63,5 +64,14 @@ export default function DeviceScreen() {
         </>
       )}
     </Screen>
+  );
+}
+
+export default function DeviceScreenGuarded() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return (
+    <OwnerOnly petId={id}>
+      <DeviceScreen />
+    </OwnerOnly>
   );
 }

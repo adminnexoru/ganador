@@ -10,9 +10,10 @@ import { useSession } from '@/auth/session';
 import { Body, Button, Card, ErrorText, Field, Loading, Screen, Title } from '@/components/ui';
 import { useQuery } from '@/hooks/use-query';
 import { spacing } from '@/theme';
+import { OwnerOnly } from '@/components/owner-only';
 
 /** Vincular la placa NFC/QR escaneando su QR o escribiendo el código (FR-019). */
-export default function TagScreen() {
+function TagScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { user, setUser } = useSession();
@@ -116,3 +117,12 @@ export default function TagScreen() {
 const s = StyleSheet.create({
   camera: { height: 280, borderRadius: 12, overflow: 'hidden', marginVertical: spacing(1) },
 });
+
+export default function TagScreenGuarded() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return (
+    <OwnerOnly petId={id}>
+      <TagScreen />
+    </OwnerOnly>
+  );
+}

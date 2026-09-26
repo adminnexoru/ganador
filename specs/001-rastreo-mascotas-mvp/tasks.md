@@ -206,12 +206,12 @@ por separado.
 
 ### Tests for User Story 4
 
-- [ ] T093 [P] [US4] Escribir pruebas de contrato en `apps/api/tests/contract/track.test.ts`: `GET /pets/{id}/track?date=` devuelve posiciones válidas del día en la zona horaria del usuario, en orden cronológico; fecha con más de 7 días → `400`; familiar → `200`
+- [X] T093 [P] [US4] Escribir pruebas de contrato en `apps/api/tests/contract/track.test.ts`: `GET /pets/{id}/track?date=` devuelve posiciones válidas del día en la zona horaria del usuario, en orden cronológico; fecha con más de 7 días → `400`; familiar → `200`
 
 ### Implementation for User Story 4
 
-- [ ] T094 [US4] Implementar `GET /pets/{id}/track` en `apps/api/src/routes/track.ts`
-- [ ] T095 [US4] Implementar la pantalla de historial en `apps/mobile/src/app/(owner)/pets/[id]/history.tsx`: selector de los últimos 7 días, polilínea del recorrido y hora de cada punto al tocarlo
+- [X] T094 [US4] Implementar `GET /pets/{id}/track` en `apps/api/src/routes/track.ts`
+- [X] T095 [US4] Implementar la pantalla de historial en `apps/mobile/src/app/(owner)/pets/[id]/history.tsx`: selector de los últimos 7 días, polilínea del recorrido y hora de cada punto al tocarlo
 
 **Checkpoint**: US4 funciona sin depender de US3 ni US5
 
@@ -225,14 +225,14 @@ por separado.
 
 ### Tests for User Story 5
 
-- [ ] T096 [P] [US5] Escribir pruebas de contrato en `apps/api/tests/contract/access.test.ts`: `POST /pets/{id}/access` crea invitación `invited`; `POST /invitations/{accessId}/accept` solo para el número invitado → `active`; el familiar recibe `403` en todos los endpoints **O** (mascota, zonas, página pública, placa, dispositivo, accesos) y `200` en ubicación, historial y zonas; tras `DELETE /pets/{id}/access/{accessId}` el familiar recibe `404`/`403` de inmediato y deja de recibir notificaciones
+- [X] T096 [P] [US5] Escribir pruebas de contrato en `apps/api/tests/contract/access.test.ts`: `POST /pets/{id}/access` crea invitación `invited`; `POST /invitations/{accessId}/accept` solo para el número invitado → `active`; el familiar recibe `403` en todos los endpoints **O** (mascota, zonas, página pública, placa, dispositivo, accesos) y `200` en ubicación, historial y zonas; tras `DELETE /pets/{id}/access/{accessId}` el familiar recibe `404`/`403` de inmediato y deja de recibir notificaciones
 
 ### Implementation for User Story 5
 
-- [ ] T097 [US5] Implementar las rutas de acceso en `apps/api/src/routes/access.ts`: `GET/POST /pets/{id}/access`, `DELETE /pets/{id}/access/{accessId}`, `GET /invitations`, `POST /invitations/{accessId}/accept`; si el número invitado ya tiene cuenta, recibe un push de invitación
-- [ ] T098 [P] [US5] Implementar el hook `usePetRole()` en `apps/mobile/src/hooks/usePetRole.ts` y usarlo para ocultar controles de edición a familiares en las pantallas de mascota, zonas, placa, página pública y dispositivo
-- [ ] T099 [P] [US5] Implementar la pantalla de familia en `apps/mobile/src/app/(owner)/pets/[id]/family.tsx`: invitar por número de celular, lista con estado y revocar
-- [ ] T100 [P] [US5] Implementar la pantalla de invitaciones en `apps/mobile/src/app/(owner)/invitations.tsx`: aceptar invitaciones pendientes
+- [X] T097 [US5] Implementar las rutas de acceso en `apps/api/src/routes/access.ts`: `GET/POST /pets/{id}/access`, `DELETE /pets/{id}/access/{accessId}`, `GET /invitations`, `POST /invitations/{accessId}/accept`; si el número invitado ya tiene cuenta, recibe un push de invitación
+- [X] T098 [P] [US5] Implementar el hook `usePetRole()` en `apps/mobile/src/hooks/usePetRole.ts` y usarlo para ocultar controles de edición a familiares en las pantallas de mascota, zonas, placa, página pública y dispositivo
+- [X] T099 [P] [US5] Implementar la pantalla de familia en `apps/mobile/src/app/(owner)/pets/[id]/family.tsx`: invitar por número de celular, lista con estado y revocar
+- [X] T100 [P] [US5] Implementar la pantalla de invitaciones en `apps/mobile/src/app/(owner)/invitations.tsx`: aceptar invitaciones pendientes
 
 **Checkpoint**: todas las historias funcionan por separado
 

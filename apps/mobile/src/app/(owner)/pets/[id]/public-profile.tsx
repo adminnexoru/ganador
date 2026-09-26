@@ -11,9 +11,10 @@ import { useSession } from '@/auth/session';
 import { Body, Button, Card, ErrorText, Loading, Screen, Title } from '@/components/ui';
 import { useQuery } from '@/hooks/use-query';
 import { colors, spacing } from '@/theme';
+import { OwnerOnly } from '@/components/owner-only';
 
 /** Qué datos muestra la página pública (FR-021); el botón de WhatsApp siempre aparece (FR-023). */
-export default function PublicProfileScreen() {
+function PublicProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { user } = useSession();
   const { data: pet } = useQuery(() => getPet(id), [id]);
@@ -102,3 +103,12 @@ const s = StyleSheet.create({
   },
   fakeButtonText: { color: '#FFFFFF', fontWeight: '700', fontSize: 16 },
 });
+
+export default function PublicProfileScreenGuarded() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  return (
+    <OwnerOnly petId={id}>
+      <PublicProfileScreen />
+    </OwnerOnly>
+  );
+}

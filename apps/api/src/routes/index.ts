@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 
+import { accessRoutes } from './access';
 import { authRoutes } from './auth';
 import { deviceRoutes } from './devices';
 import { ingestRoutes } from './ingest';
@@ -7,6 +8,7 @@ import { meRoutes } from './me';
 import { petRoutes } from './pets';
 import { publicRoutes } from './public';
 import { tagRoutes } from './tags';
+import { trackRoutes } from './track';
 import { zoneRoutes } from './zones';
 
 export async function registerRoutes(app: FastifyInstance) {
@@ -18,6 +20,8 @@ export async function registerRoutes(app: FastifyInstance) {
       await deviceRoutes(v1);
       await tagRoutes(v1);
       await zoneRoutes(v1);
+      await trackRoutes(v1);
+      await accessRoutes(v1);
     },
     { prefix: '/v1' },
   );

@@ -88,7 +88,10 @@
     "battery": "Batería {{level}}"
   },
   "history": {
-    "title": "Recorridos"
+    "title": "Recorridos",
+    "empty": "No hay recorridos registrados ese día.",
+    "summary": "{{count}} puntos, de las {{from}} a las {{to}}.",
+    "point": "Posición de las {{time}}"
   },
   "zones": {
     "title": "Zonas seguras",
@@ -125,10 +128,23 @@
     "saved": "Cambios guardados."
   },
   "family": {
-    "title": "Familia"
+    "title": "Familia",
+    "help": "Los familiares que invites verán la ubicación y el historial y recibirán las alertas, pero no podrán editar nada.",
+    "phoneLabel": "Celular del familiar (10 dígitos)",
+    "invite": "Enviar invitación",
+    "owner": "Dueño",
+    "invited": "Invitación pendiente",
+    "active": "Acceso activo",
+    "revoke": "Quitar acceso",
+    "onlyOwner": "Solo el dueño puede administrar quién ve a esta mascota.",
+    "onlyOwnerEdit": "Solo el dueño puede editar esta sección. Como familiar puedes ver la ubicación, el historial y recibir alertas."
   },
   "invitations": {
-    "title": "Invitaciones"
+    "title": "Invitaciones",
+    "empty": "No tienes invitaciones pendientes.",
+    "item": "{{owner}} te invitó a seguir a {{pet}}.",
+    "someone": "Alguien",
+    "accept": "Aceptar"
   },
   "settings": {
     "title": "Ajustes",
