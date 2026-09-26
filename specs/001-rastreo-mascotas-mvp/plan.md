@@ -13,7 +13,7 @@ de la placa como una ruta de servidor de Expo que responde HTML ligero sin JavaS
 posiciones desde **Traccar** (solo ingesta), las traduce con **adaptadores por marca** a un
 modelo neutral, evalúa geocercas y alertas con lógica pura probada primero, y notifica por
 **Expo Notifications** y, para salidas de zona, por **WhatsApp**. Costo estimado:
-**≈ US$0.19 por dispositivo activo al mes** a 5,000 dispositivos (detalle en
+**≈ US$0.14 por dispositivo activo al mes** a 5,000 dispositivos (precios consultados el 2026-09-26, con partidas pendientes de confirmar) (detalle en
 [research.md](research.md#costo-mensual-por-dispositivo-activo-resumen)).
 
 ## Technical Context

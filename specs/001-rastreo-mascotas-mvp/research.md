@@ -270,19 +270,33 @@ contratar** y actualizarse aquí con la fecha de consulta real.
 
 ## Costo mensual por dispositivo activo (resumen)
 
-Escala de referencia: 5,000 rastreadores activos. Precios de referencia por verificar.
+Escala de referencia: 5,000 rastreadores activos. **Precios consultados el 2026-09-26**
+(ver "Verificación de precios" abajo).
 
-| Concepto | Costo / dispositivo / mes |
-|----------|---------------------------|
-| Servidor (Traccar + API + BD) y respaldos | US$0.006 |
-| Web (servidor de Expo en la misma VM) | US$0.000 |
-| Notificaciones push (Expo) | US$0.000 |
-| Mapas móviles | US$0.000 |
-| Fotos | < US$0.001 |
-| WhatsApp: alertas de salida de zona (60 % de aceptación) | ≈ US$0.090 |
-| WhatsApp/SMS: códigos de acceso | ≈ US$0.030 |
-| Medición de tiempos | US$0.000 (mismo servidor) |
-| **Total** | **≈ US$0.13** (techo ≈ US$0.19) |
+| Concepto | Supuesto | Costo / dispositivo / mes |
+|----------|----------|---------------------------|
+| Servidor (Traccar + API + web + BD) y respaldos | VM ≈ US$25 + respaldos ≈ US$5 | US$0.006 |
+| Web y página pública | mismo servidor | US$0.000 |
+| Notificaciones push (Expo) | sin costo por mensaje | US$0.000 |
+| Mapas móviles | SDK móviles sin costo por carga | US$0.000 |
+| Fotos | < 5 GB en S3 | < US$0.001 |
+| WhatsApp: alertas de salida de zona | 10 salidas × 1.5 destinatarios × 60 % × US$0.0080 | ≈ US$0.072 |
+| WhatsApp: códigos de acceso | 1.5 códigos × US$0.0207 | ≈ US$0.031 |
+| SMS de respaldo para códigos | 10 % × 1.5 × US$0.1819 | ≈ US$0.027 |
+| **Total** | | **≈ US$0.14** (techo con 100 % de aceptación de WhatsApp: ≈ US$0.18) |
+
+### Verificación de precios (2026-09-26)
+
+| Proveedor | Precio | Fuente | Estado |
+|-----------|--------|--------|--------|
+| SMS a México (Twilio) | US$0.1819 por mensaje | Página oficial de precios de Twilio para México | Verificado (fuente oficial). Es más del doble del supuesto inicial (US$0.08) |
+| WhatsApp utilidad, México | US$0.0080 por mensaje; gratis dentro de la ventana de atención de 24 h | Tarifa de Meta vigente desde el 2026-07-01, citada por guías de terceros; Meta publica las cifras solo en su CSV/PDF | **Pendiente**: confirmar con el CSV oficial de Meta |
+| WhatsApp autenticación, México | US$0.0207 por mensaje | Igual que la anterior | **Pendiente**: confirmar con el CSV oficial de Meta |
+| VM 4 vCPU / 8 GB en EE. UU. (Hetzner CPX31, Ashburn) | ≈ US$25/mes, 1 TB de transferencia | Reportes de terceros tras el ajuste de precios de 2026 | **Pendiente**: confirmar en la consola de Hetzner (hay reportes contradictorios) |
+| Almacenamiento S3 para fotos y respaldos | ≈ US$5/mes | Supuesto | **Pendiente** |
+
+El SMS resultó el ajuste más grande. Si su volumen crece, conviene reducir el respaldo por SMS
+(p. ej. solo después de un segundo intento por WhatsApp).
 
 **Costos fijos fuera de la tabla**: cuenta de Apple Developer (US$99/año), Google Play
 (US$25 una vez), dominio (≈ US$15/año), EAS Build en plan gratuito.
