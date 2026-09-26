@@ -64,9 +64,8 @@ funciona; confirmar que el dueño recibe la notificación.
 4. **Given** la página pública abierta, **When** la persona toca "Llamar" o "WhatsApp", **Then**
    se inicia la llamada o se abre una conversación de WhatsApp con el dueño y un mensaje
    prellenado que menciona a la mascota.
-5. **Given** que alguien abre la página pública, **When** permite compartir su ubicación,
-   **Then** el dueño recibe una notificación con la ubicación aproximada; si no lo permite,
-   recibe la notificación sin ubicación.
+5. **Given** que alguien abre la página pública, **Then** el dueño recibe una notificación con
+   la hora de la consulta, y la página no solicita ni registra la ubicación de quien la abre.
 6. **Given** una placa sin vincular o desvinculada, **When** alguien la escanea, **Then** ve un
    mensaje de que la placa no está activa, sin datos personales.
 
@@ -131,7 +130,7 @@ alertas; revocar el acceso y confirmar que deja de verla.
 
 **Acceptance Scenarios**:
 
-1. **Given** un dueño, **When** invita a una persona por teléfono o correo, **Then** la persona
+1. **Given** un dueño, **When** invita a una persona por su número de celular, **Then** la persona
    recibe una invitación y, al aceptarla con su propia cuenta, ve la mascota.
 2. **Given** un familiar con acceso, **Then** puede ver la ubicación y el historial y recibir las
    alertas, pero no puede editar la mascota, las zonas, la página pública, la placa ni los
@@ -154,6 +153,8 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - Una placa perdida o robada: el dueño puede desvincularla y deja de mostrar datos.
 - Muchas consultas seguidas a la misma página pública: se agrupan las notificaciones al dueño
   para no saturarlo, sin perder el registro de cada consulta.
+- El dueño no tiene WhatsApp o no activó ese canal: recibe la alerta de salida solo como
+  notificación de la app.
 - Quien encuentra a la mascota no tiene WhatsApp: el botón de llamada sigue disponible.
 - El dueño oculta todos sus medios de contacto: la app le impide guardar esa configuración,
   porque la página pública debe mostrar al menos un medio de contacto.
@@ -165,7 +166,9 @@ alertas; revocar el acceso y confirmar que deja de verla.
 
 **Cuenta y privacidad**
 
-- **FR-001**: Los dueños DEBEN poder crear una cuenta verificando su correo o número de celular.
+- **FR-001**: Los dueños DEBEN crear su cuenta e iniciar sesión con su número de celular y un
+  código de verificación enviado por WhatsApp o, si no está disponible, por SMS. Ese número
+  queda verificado para recibir alertas por WhatsApp.
 - **FR-002**: El sistema DEBE mostrar el aviso de privacidad y obtener consentimiento explícito
   antes de recolectar datos personales, y registrar la fecha y versión aceptada.
 - **FR-003**: Los dueños DEBEN poder revocar su consentimiento y eliminar su cuenta y sus datos.
@@ -192,11 +195,17 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **FR-012**: Los dueños DEBEN poder crear, nombrar, editar y eliminar zonas seguras por mascota.
 - **FR-013**: El sistema DEBE notificar la salida y la entrada de una mascota en una zona en
   menos de 2 minutos desde que el rastreador reporta la posición.
+- **FR-013a**: Todas las alertas DEBEN enviarse como notificación de la app. La alerta de salida
+  de zona DEBE enviarse además por WhatsApp a cada persona que recibe las alertas de la mascota
+  y que haya activado ese canal con un número verificado. Si el mensaje de WhatsApp falla, la
+  notificación de la app DEBE entregarse igual.
 - **FR-014**: El sistema NO DEBE enviar alertas repetidas de salida y entrada causadas por la
   imprecisión de la posición cerca del borde de la zona.
 - **FR-015**: El sistema DEBE avisar una vez cuando la batería llegue al 20 % o menos, y no
   volver a avisar hasta que se recargue por encima de ese nivel.
 - **FR-016**: El sistema DEBE avisar cuando un rastreador deje de reportar por más de 30 minutos.
+- **FR-016a**: En el MVP los umbrales de batería baja (20 %), ubicación desactualizada y pérdida
+  de señal (30 minutos) son fijos; el dueño no puede cambiarlos.
 
 **Compartir con la familia**
 
@@ -216,8 +225,10 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **FR-022**: La página pública NUNCA DEBE mostrar la dirección del domicilio.
 - **FR-023**: La página pública DEBE mostrar al menos un medio de contacto y ofrecer llamar o
   enviar WhatsApp al dueño con un solo toque.
-- **FR-024**: El sistema DEBE notificar al dueño cada consulta a la página pública, con la
-  ubicación aproximada solo si quien consulta da permiso.
+- **FR-024**: El sistema DEBE notificar al dueño cada consulta a la página pública, indicando
+  la hora de la consulta.
+- **FR-024a**: La página pública NO DEBE solicitar, calcular (por ejemplo, a partir de la
+  dirección de red) ni guardar la ubicación ni otros datos personales de quien la abre.
 - **FR-025**: La página pública DEBE estar disponible siempre que la placa esté vinculada,
   mostrando los datos autorizados por el dueño, sin requerir que la mascota se marque como
   extraviada.
@@ -239,8 +250,8 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **Zona segura**: área con nombre asociada a una mascota.
 - **Placa**: identificador único con NFC y QR, vinculable a una mascota.
 - **Configuración de página pública**: qué datos autorizó mostrar el dueño.
-- **Consulta de placa**: registro de cada apertura de la página pública, con hora y ubicación
-  aproximada opcional.
+- **Consulta de placa**: registro de cada apertura de la página pública, solo con la placa y la
+  hora; no contiene datos de quien la abrió.
 
 ## Success Criteria *(mandatory)*
 
@@ -255,6 +266,8 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **SC-004**: Menos del 5 % de las alertas de zona son falsas (la mascota no salió realmente).
 - **SC-005**: El 90 % de los dueños nuevos completan registro, alta de mascota y vinculación de
   rastreador en menos de 10 minutos sin ayuda.
+- **SC-007**: Los criterios SC-001 a SC-003 se cumplen con hasta 5,000 rastreadores activos
+  reportando al mismo tiempo.
 - **SC-006**: Ninguna página pública muestra datos no autorizados por el dueño ni la dirección
   del domicilio.
 
@@ -265,6 +278,15 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - Q: ¿Qué puede hacer un familiar invitado? → A: Solo ver ubicación, historial y recibir
   alertas; editar es exclusivo del dueño.
 - Q: ¿Cuándo está activa la página pública? → A: Siempre, mientras la placa esté vinculada.
+- Q: ¿Por qué medio llegan las alertas críticas? → A: Notificaciones de la app para todas;
+  la salida de zona también por WhatsApp.
+- Q: ¿Cuántos rastreadores activos se esperan el primer año? → A: Hasta 5,000.
+- Q: ¿Con qué precisión se muestra al dueño la ubicación de quien encontró a la mascota? → A: No
+  se recolecta; la página pública no pide ni guarda la ubicación de quien la abre.
+- Q: ¿Cómo se registra y entra un dueño a su cuenta? → A: Con número de celular y código de
+  verificación por WhatsApp o SMS.
+- Q: ¿El dueño puede cambiar los umbrales de batería baja y pérdida de señal? → A: No; en el
+  MVP son fijos (20 % y 30 minutos).
 
 ## Assumptions
 
@@ -275,8 +297,14 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - El rastreador reporta su posición con la frecuencia necesaria para cumplir la alerta de 2
   minutos; la frecuencia exacta depende del dispositivo.
 - Las placas vienen con un identificador único de fábrica que el dueño activa desde la app.
-- Umbrales por defecto: batería baja al 20 %, ubicación desactualizada y pérdida de señal a los
-  30 minutos.
+- Cada mensaje de WhatsApp tiene un costo; el plan debe incluirlo en el costo mensual por
+  dispositivo activo, estimado según el número de salidas de zona esperadas.
+- El envío de códigos de verificación por WhatsApp o SMS tiene costo y debe incluirse en el
+  costo mensual por dispositivo activo.
+- Escala del primer año: hasta 5,000 rastreadores activos, principalmente en zonas urbanas de
+  México; el costo mensual por dispositivo activo se calcula para ese volumen.
+- Los umbrales fijos de FR-016a podrán volverse ajustables en una versión posterior, con base en
+  datos de uso.
 - El inglés no se habilita en el MVP, pero la interfaz queda preparada para agregarlo.
 - Fuera de alcance: pagos y suscripciones, monitoreo de salud, tienda de dispositivos.
 - Las enfermedades y medicamentos son de la mascota, no del dueño, pero solo se muestran si el
