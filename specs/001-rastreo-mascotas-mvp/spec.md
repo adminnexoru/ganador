@@ -176,6 +176,12 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **FR-002**: El sistema DEBE mostrar el aviso de privacidad y obtener consentimiento explícito
   antes de recolectar datos personales, y registrar la fecha y versión aceptada.
 - **FR-003**: Los dueños DEBEN poder revocar su consentimiento y eliminar su cuenta y sus datos.
+- **FR-003a**: Los dueños DEBEN poder ejercer sus derechos ARCO: **acceso** (descargar sus datos
+  en un archivo legible desde la app), **rectificación** (editar sus datos y los de sus
+  mascotas), **cancelación** (eliminar la cuenta, FR-003) y **oposición** (desactivar alertas por
+  WhatsApp, ocultar datos públicos, borrar zonas). Las solicitudes que no puedan resolverse en la
+  app se atienden por un correo indicado en el aviso de privacidad, dentro de los plazos que
+  marca la ley.
 - **FR-004**: Toda la interfaz de la app y de la página pública DEBE estar en español de México.
 
 **Mascotas y dispositivos**
@@ -207,7 +213,7 @@ alertas; revocar el acceso y confirmar que deja de verla.
   menos de 2 minutos desde que el rastreador reporta la posición.
 - **FR-013a**: Todas las alertas DEBEN enviarse como notificación de la app. La alerta de salida
   de zona DEBE enviarse además por WhatsApp a cada persona que recibe las alertas de la mascota
-  y que haya activado ese canal con un número verificado. Si el mensaje de WhatsApp falla, la
+  y que haya aceptado expresamente recibir alertas por WhatsApp con un número verificado. Si el mensaje de WhatsApp falla, la
   notificación de la app DEBE entregarse igual.
 - **FR-014**: El sistema NO DEBE enviar alertas repetidas de salida y entrada causadas por la
   imprecisión de la posición cerca del borde de la zona.
@@ -245,6 +251,25 @@ alertas; revocar el acceso y confirmar que deja de verla.
   extraviada.
 - **FR-026**: Una placa sin vincular DEBE mostrar un mensaje de placa inactiva sin datos
   personales.
+
+### Clasificación y datos personales *(constitución, principio III y flujo de desarrollo)*
+
+- **Funciones críticas**: US1, US2 y US3. **Valor agregado**: US4 y US5.
+- **Integración con hardware**: sí, mediante adaptadores al modelo neutral (FR-007).
+
+| Dato | Titular | Finalidad | Quién lo ve | Conservación |
+|------|---------|-----------|-------------|--------------|
+| Número de celular del dueño | Dueño | Acceso a la cuenta; alertas por WhatsApp si las acepta; contacto en la página pública si lo autoriza | Dueño; público solo si lo autoriza | Hasta eliminar la cuenta |
+| Nombre del dueño | Dueño | Identificarlo ante familiares y en la página pública si lo autoriza | Dueño, familiares; público solo si lo autoriza | Hasta eliminar la cuenta |
+| Ubicaciones y recorridos de la mascota | Dueño (revelan sus rutinas) | Mostrar ubicación, historial y generar alertas | Dueño y familiares con acceso activo | 7 días |
+| Zonas seguras (incluida "Casa") | Dueño | Generar alertas de salida y entrada | Dueño y familiares con acceso activo; nunca público | Hasta que el dueño las borre |
+| Foto de la mascota | Dueño | Identificar a la mascota | Dueño, familiares y público; sin metadatos de ubicación | Hasta borrarla o eliminar la cuenta |
+| Número del familiar invitado | Familiar (tercero) | Enviar y validar la invitación | Dueño | Invitación sin aceptar: 30 días |
+| Consentimientos (aviso y WhatsApp) | Dueño | Demostrar el consentimiento | Solo el sistema | Mientras exista la cuenta y el plazo legal |
+| Consultas a la placa | — (solo placa y hora; no hay datos de quien consulta) | Avisar al dueño | Dueño y familiares | 90 días |
+
+Las enfermedades y medicamentos son de la mascota, no datos personales del dueño; se publican solo
+si el dueño lo autoriza. Quien encuentra a la mascota no entrega ningún dato (FR-024a).
 
 ### Key Entities *(include if feature involves data)*
 

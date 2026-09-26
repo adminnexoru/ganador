@@ -17,9 +17,10 @@ Un familiar que llama a un endpoint **O** recibe `403 forbidden` (FR-018).
 | `POST /auth/logout` | — | `204` |
 | `GET /privacy-notice` | — | `{ version, url }` |
 | `POST /me/consent` | `{ noticeVersion }` | `204` |
-| `GET /me` / `PATCH /me` | `{ displayName?, whatsappAlertsEnabled? }` | usuario |
+| `GET /me` / `PATCH /me` | `{ displayName?, whatsappAlertsEnabled? }` | usuario; activar WhatsApp registra `whatsappOptInAt` y desactivarlo lo limpia |
 | `DELETE /me` | — | `202`; revoca consentimiento, borra datos en ≤ 24 h, desactiva placas |
 | `POST /me/push-tokens` | `{ token, platform }` | `204` |
+| `GET /me/export` | — | JSON con cuenta, consentimientos, mascotas, zonas, dispositivos, accesos y posiciones vigentes (últimos 7 días); derecho de acceso (FR-003a) |
 
 Mientras `needsConsent` sea verdadero, todo endpoint fuera de `/auth/*`, `/privacy-notice` y
 `/me/consent` responde `403 consent_required`.

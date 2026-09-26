@@ -87,7 +87,8 @@ de ≤ 20 % y se rearma al superar 25 % (FR-015).
 | id | uuid | |
 | phoneE164 | text | único; verificado por código (FR-001) |
 | displayName | text | 1–60 caracteres |
-| whatsappAlertsEnabled | boolean | por defecto `true` tras verificar el número (FR-013a) |
+| whatsappAlertsEnabled | boolean | por defecto `false`; solo se activa con aceptación expresa (FR-013a) |
+| whatsappOptInAt | timestamptz, nulo | fecha de la aceptación; se limpia al desactivarlas |
 | locale | text | `es-MX` por defecto |
 | deletedAt | timestamptz, nulo | al eliminar la cuenta se borran datos personales en ≤ 24 h |
 
@@ -114,7 +115,7 @@ Sin consentimiento vigente no se crean mascotas ni se guardan datos (FR-002).
 | species | enum | `dog`, `cat` |
 | breed | text, nulo | ≤ 60 |
 | size | enum, nulo | `small`, `medium`, `large` |
-| photoKey | text, nulo | clave en almacenamiento de objetos; se guarda una versión reducida para la página pública |
+| photoKey | text, nulo | clave en almacenamiento de objetos; la imagen se guarda sin metadatos (EXIF/XMP/IPTC, incluida la ubicación GPS); se guarda una versión reducida para la página pública |
 | conditions | text, nulo | enfermedades, ≤ 500 |
 | medications | text, nulo | ≤ 500 |
 | createdAt | timestamptz | |
@@ -133,7 +134,8 @@ Sin consentimiento vigente no se crean mascotas ni se guardan datos (FR-002).
 **Reglas**: exactamente un `owner` activo por mascota. `family` solo lee ubicación e historial
 y recibe alertas; no edita mascota, zonas, página pública, placa ni accesos (FR-018).
 **Transiciones**: `invited → active` (acepta), `invited|active → revoked` (el dueño revoca;
-efecto inmediato).
+efecto inmediato). Las invitaciones `invited` con más de 30 días se eliminan, junto con el
+número invitado.
 
 ### SafeZone (Zona segura)
 

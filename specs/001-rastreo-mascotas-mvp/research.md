@@ -83,6 +83,18 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   neutral; Traccar podría reemplazarse o convivir con otro adaptador (por ejemplo, la nube de
   un fabricante) sin tocar el resto. No se usan las geocercas ni las notificaciones de Traccar,
   para que esa lógica sea nuestra y se pruebe antes de programarse (principio VII).
+- **Cifrado en tránsito** (constitución v1.1.0, "Transporte desde el hardware"):
+  - OsmAnd (Traccar Client y rastreadores compatibles) solo por HTTPS: Caddy recibe
+    `https://track.<dominio>` y lo pasa a `traccar:5055`, que no se publica a internet.
+  - Protocolos sin cifrado aceptados en el MVP: **GT06** (puerto 5023), porque la mayoría de los
+    rastreadores económicos disponibles en México solo lo soportan. El rastreador envía solo
+    IMEI, posición, batería y estado; el dueño solo existe en el servidor.
+  - Traccar rechaza dispositivos no registrados en producción (`database.registerUnknown=false`;
+    el alta ocurre al vincular, ver contracts/device-ingest.md).
+  - **Filtro de plausibilidad** en la ingesta: se descarta una posición si la velocidad implícita
+    desde la última posición válida supera 250 km/h o si su hora está más de 5 minutos en el
+    futuro. Se registra el descarte para detectar suplantaciones.
+  - Al elegir hardware se prefieren modelos con TLS o SIM con APN privada.
 - **Retención en Traccar**: se configura para no ser la fuente de verdad; un trabajo diario
   borra en la base de Traccar las posiciones con más de 7 días (FR-011).
 - **Alternatives considered**: implementar protocolos de rastreadores desde cero (enorme
@@ -170,6 +182,9 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   el código de acceso. Respaldo de SMS para códigos con un proveedor de SMS (p. ej. Twilio).
   Se accede a través de un puerto `MessagingProvider` para poder cambiar de proveedor.
 - **Rationale**: WhatsApp es el canal más usado en México y cuesta menos que el SMS.
+- **Consentimiento**: las alertas por WhatsApp se envían solo con aceptación expresa del usuario
+  (política de Meta y principio III); se guarda la fecha de aceptación. El código de acceso no
+  la requiere porque lo solicita el propio usuario.
 - **Costo** (referencia; Meta cobra por mensaje de plantilla entregado según país):
   - Alerta de salida: supuesto de 10 salidas/mes × 1.5 destinatarios × ≈ US$0.01
     = **≈ US$0.15 / dispositivo / mes**. Es el costo variable más grande; si crece, se puede
@@ -220,7 +235,13 @@ contratar** y actualizarse aquí con la fecha de consulta real.
     memoria con expiración de 1 minuto. La IP ni su HMAC se escriben en base de datos, registros
     ni respaldos. Con varias instancias el límite es por instancia, aceptable a esta escala.
   - Eliminación de cuenta: borrado de datos personales en ≤ 24 h, placas quedan inactivas.
-  - Cifrado en tránsito (HTTPS/TLS) y en reposo (disco cifrado y respaldos cifrados).
+  - Cifrado en tránsito (HTTPS/TLS) y en reposo (disco cifrado y respaldos cifrados); desde
+    el hardware, según R5.
+  - Fotos: se eliminan los metadatos (EXIF, XMP, IPTC, incluida la ubicación GPS) al subirlas.
+  - Invitaciones sin aceptar: se borran a los 30 días con el número invitado.
+  - Aviso de privacidad integral versionado en `apps/api/src/privacy/notices/`, con revisión de
+    un asesor legal antes de producción; derechos ARCO desde la app (exportar datos, editar,
+    eliminar cuenta, oponerse) y por correo para lo demás (FR-003a).
   - La dirección del domicilio no existe en el modelo de datos.
 
 ---

@@ -52,6 +52,10 @@ un perfil y sus pruebas.
 
 ## Traccar → backend
 
+Puertos de entrada: OsmAnd solo por HTTPS en `https://track.<dominio>` (Caddy → `traccar:5055`);
+GT06 en el puerto 5023 sin cifrado, aceptado bajo la regla "Transporte desde el hardware" de la
+constitución v1.1.0.
+
 Traccar se configura para reenviar posiciones y eventos por HTTP al backend (red interna de
 Docker, no expuesta a internet):
 
@@ -104,9 +108,12 @@ dispositivo (`POST /pets/{id}/device`), el adaptador lo registra en Traccar con
 ## Pipeline tras el adaptador
 
 1. Resolver `DeviceRef` → `Device` vinculado; si no existe o no está vinculado, descartar.
-2. Guardar `Position` y `BatteryReading` (descarta duplicados por `(deviceId, recordedAt)`).
-3. Actualizar `lastSeenAt` y `activity`; evaluar reglas puras de `packages/domain` (zonas,
+2. Filtro de plausibilidad: descartar la posición si la velocidad implícita desde la última
+   posición válida supera 250 km/h o si `recordedAt` está más de 5 minutos en el futuro
+   (constitución v1.1.0, "Transporte desde el hardware"); registrar el descarte.
+3. Guardar `Position` y `BatteryReading` (descarta duplicados por `(deviceId, recordedAt)`).
+4. Actualizar `lastSeenAt` y `activity`; evaluar reglas puras de `packages/domain` (zonas,
    batería, actividad) → `DeviceEvent[]`.
-4. Encolar notificaciones (pg-boss) → push y, para `zone_exit`, WhatsApp.
+5. Encolar notificaciones (pg-boss) → push y, para `zone_exit`, WhatsApp.
 
-Objetivo: pasos 1–4 en < 5 s por posición (p95), dejando margen para SC-002.
+Objetivo: pasos 1–5 en < 5 s por posición (p95), dejando margen para SC-002.

@@ -58,7 +58,7 @@ página pública; 5 historias de usuario.
 |-----------|---------------------------|--------|
 | I. Independencia de hardware | Traccar solo como ingesta; `DeviceAdapter` + perfiles por marca traducen al modelo neutral (dispositivo, posición, evento, batería); geocercas y alertas propias, no de Traccar ([device-ingest.md](contracts/device-ingest.md)) | ✅ |
 | II. Mascota primero | Las HU1–HU3 (ubicación, placa, alertas) son P1 y se implementan antes que historial y familia (P2) | ✅ |
-| III. Privacidad (LFPDPPP) | Aviso y consentimiento versionados antes de guardar datos; configuración pública por mascota; sin dirección en el modelo; sin datos de quien escanea; retención de 7 y 90 días; borrado de cuenta ≤ 24 h ([research R16](research.md)) | ✅ |
+| III. Privacidad (LFPDPPP) | Aviso y consentimiento versionados antes de guardar datos; configuración pública por mascota; sin dirección en el modelo; sin datos de quien escanea; retención de 7, 30 y 90 días; borrado de cuenta ≤ 24 h; fotos sin metadatos; WhatsApp con aceptación expresa; derechos ARCO (FR-003a); inventario de datos en la spec; OsmAnd por HTTPS y GT06 sin cifrado bajo las condiciones de la regla "Transporte desde el hardware" (v1.1.0), con filtro de plausibilidad ([research R5 y R16](research.md)) | ✅ |
 | IV. Español primero | i18next con es-MX base; lint contra textos literales; formatos con `Intl` | ✅ |
 | V. Móvil primero y placa ligera | App del dueño móvil; página pública estática sin sesión con presupuesto medido en CI | ✅ |
 | VI. Costos visibles | Costo por dispositivo documentado por decisión y en tabla resumen | ✅ |
