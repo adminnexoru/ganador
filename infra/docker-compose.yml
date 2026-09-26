@@ -64,6 +64,17 @@ services:
       db:
         condition: service_healthy
 
+  web:
+    # Página pública de la placa y aviso de privacidad (research R3).
+    build:
+      context: ..
+      dockerfile: apps/mobile/Dockerfile.web
+    profiles: ["server"]
+    environment:
+      API_INTERNAL_URL: http://api:3000
+    depends_on:
+      - api
+
   caddy:
     image: caddy:2
     profiles: ["server"]
@@ -75,6 +86,7 @@ services:
       - caddy-data:/data
     depends_on:
       - api
+      - web
       - traccar
 
 volumes:

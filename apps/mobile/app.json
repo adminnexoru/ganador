@@ -22,12 +22,20 @@
       "package": "ai.nexoru.ganador"
     },
     "web": {
-      "output": "static",
+      "output": "server",
       "favicon": "./assets/images/favicon.png",
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "asyncRoutes": {
+            "web": true,
+            "default": "development"
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {

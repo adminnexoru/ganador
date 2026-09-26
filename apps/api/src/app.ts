@@ -1,5 +1,5 @@
 import multipart from '@fastify/multipart';
-import Fastify, { type FastifyInstance } from 'fastify';
+import Fastify, { type FastifyInstance, type FastifyServerOptions } from 'fastify';
 
 import { TraccarApiClient } from './adapters/traccar/api-client';
 import type { Config } from './config';
@@ -18,15 +18,19 @@ import { createStorage } from './storage';
 export async function buildApp({
   config,
   deps: overrides = {},
+  logger,
 }: {
   config: Config;
   deps?: Partial<Omit<Deps, 'config'>>;
+  logger?: FastifyServerOptions['logger'];
 }): Promise<FastifyInstance> {
   const app = Fastify({
-    logger: config.NODE_ENV === 'test' ? false : loggerOptions(config.NODE_ENV === 'production' ? 'info' : 'debug'),
-    // Detrás de Caddy. La IP solo se usa en memoria para el límite por origen (research R16);
-    // nunca se registra ni se guarda.
-    trustProxy: true,
+    logger:
+      logger ?? (config.NODE_ENV === 'test' ? false : loggerOptions(config.NODE_ENV === 'production' ? 'info' : 'debug')),
+    // Detrás de Caddy y del servidor web de Expo (red privada). Solo se confía en
+    // X-Forwarded-For que viene de esos proxies internos. La IP solo se usa en memoria para
+    // el límite por origen (research R16); nunca se registra ni se guarda.
+    trustProxy: ['loopback', 'linklocal', 'uniquelocal'],
   });
 
   let closeDb: (() => Promise<void>) | undefined;

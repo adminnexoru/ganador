@@ -1,0 +1,16 @@
+# Servidor web de Expo (web.output: "server"): aviso de privacidad y página pública de la placa.
+FROM node:24-slim AS build
+WORKDIR /app
+RUN corepack enable
+COPY . .
+RUN pnpm install --frozen-lockfile --filter @ganador/mobile...
+ARG EXPO_PUBLIC_API_URL=https://api.ganador.nexoru.ai
+ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL
+RUN pnpm --filter @ganador/mobile export:web
+
+FROM node:24-slim
+WORKDIR /app/apps/mobile
+COPY --from=build /app /app
+ENV NODE_ENV=production PORT=8081
+EXPOSE 8081
+CMD ["node", "server/index.mjs"]

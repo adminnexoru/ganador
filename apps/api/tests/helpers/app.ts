@@ -4,6 +4,7 @@ import { migrate } from 'drizzle-orm/pglite/migrator';
 import type { FastifyInstance } from 'fastify';
 
 import { buildApp } from '../../src/app';
+import { loggerOptions } from '../../src/plugins/logging';
 import type { Config } from '../../src/config';
 import type { Db } from '../../src/db/client';
 import * as schema from '../../src/db/schema';
@@ -51,7 +52,8 @@ export class TestClock {
 
 export type TestContext = Awaited<ReturnType<typeof createTestApp>>;
 
-export async function createTestApp() {
+export async function createTestApp(opts: { captureLogs?: boolean } = {}) {
+  const logs: string[] = [];
   const client = new PGlite();
   const db = drizzle(client, { schema, casing: 'snake_case' }) as unknown as Db;
   await migrate(db as never, { migrationsFolder: new URL('../../drizzle', import.meta.url).pathname });
@@ -64,6 +66,9 @@ export async function createTestApp() {
   const app: FastifyInstance = await buildApp({
     config: testConfig,
     deps: { db, messaging, push, queue, storage, traccar, now: clock.now },
+    ...(opts.captureLogs
+      ? { logger: { ...loggerOptions('trace'), stream: { write: (line: string) => logs.push(line) } } }
+      : {}),
   });
   await app.ready();
 
@@ -91,6 +96,7 @@ export async function createTestApp() {
 
   return {
     app,
+    logs,
     db,
     client,
     messaging,

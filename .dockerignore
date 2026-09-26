@@ -5,7 +5,8 @@ Dockerfile*
 *.log*
 .env*
 coverage/
-apps/mobile/
+apps/mobile/dist/
+apps/mobile/.expo/
 specs/
 .specify/
 .claude/

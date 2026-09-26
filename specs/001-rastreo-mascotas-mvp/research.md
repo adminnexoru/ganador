@@ -32,24 +32,28 @@ contratar** y actualizarse aquí con la fecha de consulta real.
 
 ## R3. Página pública rápida en redes móviles (SC-003, < 5 s)
 
-- **Decision**: exportación estática de Expo Router (`web.output: "static"`) con la ruta
-  `/p/[codigo]` prerenderizada como esqueleto; los datos se obtienen con una sola petición a
-  `GET /public/tags/{codigo}` (ver [contracts/public-api.md](contracts/public-api.md)).
-  Presupuesto de rendimiento de la ruta:
-  - JavaScript de la ruta ≤ 200 KB comprimido (gzip), sin mapas ni librerías de la app del dueño.
-  - Foto de la mascota servida en tamaño reducido (≤ 60 KB, WebP/JPEG) desde la API.
-  - Datos de contacto visibles en ≤ 5 s en Lighthouse con perfil "Slow 4G" en un Android de
-    gama media emulado.
-  - Un solo botón "Enviar WhatsApp" (`https://wa.me/<número>?text=...`) como enlace simple, sin
-    JavaScript adicional; sin llamada ni número visible (FR-023).
-- **Rationale**: mantiene la página dentro del mismo proyecto (principio VIII) y permite medir
-  el presupuesto en CI.
-- **Alternatives considered**: renderizado en servidor con Expo Router (`output: "server"`),
-  que requiere hosting con funciones y agrega costo; página HTML aparte servida por la API
-  (más rápida, pero rompe el principio VIII). **Plan de contingencia**: si el presupuesto no
-  se cumple, se evalúa `output: "server"` antes que cualquier código fuera del proyecto.
-- **Costo**: hosting estático en CDN con plan gratuito de uso comercial (p. ej. Cloudflare
-  Pages): **US$0 / dispositivo / mes**.
+- **Decision** (actualizada el 2026-09-26 durante la implementación): la web del proyecto Expo
+  corre en modo servidor (`web.output: "server"`). La página de la placa es una **ruta de
+  servidor de Expo Router** (`apps/mobile/src/app/p/[code]+api.ts`) que consulta
+  `GET /public/tags/{codigo}` (ver [contracts/public-api.md](contracts/public-api.md)) y responde
+  HTML ya armado con los datos, **sin JavaScript**. Presupuesto de rendimiento de la ruta:
+  - JavaScript ≤ 200 KB comprimido (medido: 0 KB).
+  - Peso total ≤ 100 KB sin foto (medido: 16 KB); foto reducida ≤ 60 KB (WebP) desde la API.
+  - Contacto visible (LCP) ≤ 5 s en Lighthouse móvil con "Slow 4G" simulado y CPU 4×
+    (medido: 0.9 s).
+  - Un solo botón "Enviar WhatsApp" (`https://wa.me/<número>?text=...`) como enlace simple;
+    sin llamada ni número visible (FR-023).
+- **Rationale**: la primera versión como página estática de Expo Router cumplía la meta de
+  tiempo con poco margen (4.3 s) y pesaba ~360 KB de JavaScript, casi todo la base de Expo
+  Router + React Native Web + React DOM (~290 KB), imposible de recortar. La ruta de servidor
+  sigue dentro del mismo proyecto Expo (principio VIII) y deja la página en ~1 s.
+- **Alternatives considered**: mantener la página estática y subir el presupuesto a ~400 KB
+  (poco margen en redes lentas reales); página HTML servida por la API Fastify (igual de rápida,
+  pero fuera del proyecto Expo, contra el principio VIII).
+- **Hosting**: el servidor web de Expo (`apps/mobile/server/index.mjs`, adaptador
+  `expo-server`) corre en la misma máquina virtual que la API, detrás de Caddy, y reenvía a la
+  API la IP del visitante solo para el límite por origen en memoria (research R16).
+- **Costo**: mismo servidor de R9: **US$0 adicionales / dispositivo / mes**.
 
 ## R4. NFC y QR sin app
 
@@ -271,7 +275,7 @@ Escala de referencia: 5,000 rastreadores activos. Precios de referencia por veri
 | Concepto | Costo / dispositivo / mes |
 |----------|---------------------------|
 | Servidor (Traccar + API + BD) y respaldos | US$0.006 |
-| Web estática (CDN) | US$0.000 |
+| Web (servidor de Expo en la misma VM) | US$0.000 |
 | Notificaciones push (Expo) | US$0.000 |
 | Mapas móviles | US$0.000 |
 | Fotos | < US$0.001 |

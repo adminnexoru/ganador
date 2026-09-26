@@ -9,7 +9,7 @@
 App para que dueños en México vean dónde está su mascota, reciban alertas de salida de zona y
 de batería, y la recuperen con una placa NFC/QR. Se construye como **una sola app Expo (React
 Native) con Expo Router y TypeScript** para Android, iOS y web; la web sirve la página pública
-de la placa como sitio estático ligero. Un **backend propio en Node.js/TypeScript** recibe las
+de la placa como una ruta de servidor de Expo que responde HTML ligero sin JavaScript. Un **backend propio en Node.js/TypeScript** recibe las
 posiciones desde **Traccar** (solo ingesta), las traduce con **adaptadores por marca** a un
 modelo neutral, evalúa geocercas y alertas con lógica pura probada primero, y notifica por
 **Expo Notifications** y, para salidas de zona, por **WhatsApp**. Costo estimado:
@@ -42,7 +42,7 @@ pública).
 < 2 min desde el reporte (SC-002), con procesamiento de posición < 5 s p95; contacto visible
 < 5 s tras escanear en "Slow 4G" (SC-003); ≈ 1.5 M posiciones/día.
 
-**Constraints**: JavaScript de la ruta pública ≤ 200 KB gzip; sin IP ni ubicación de quien
+**Constraints**: JavaScript de la ruta pública ≤ 200 KB gzip (medido: 0 KB, ruta de servidor); sin IP ni ubicación de quien
 escanea (límite por origen solo en memoria, con HMAC rotativo); umbral de señal por
 dispositivo (intervalo en reposo + tolerancia); posiciones retenidas 7 días; es-MX sin textos literales; rastreadores que reporten
 ≤ 60 s en movimiento; desarrollo con Expo Go salvo notificaciones push en Android.
@@ -60,7 +60,7 @@ página pública; 5 historias de usuario.
 | II. Mascota primero | Las HU1–HU3 (ubicación, placa, alertas) son P1 y se implementan antes que historial y familia (P2) | ✅ |
 | III. Privacidad (LFPDPPP) | Aviso y consentimiento versionados antes de guardar datos; configuración pública por mascota; sin dirección en el modelo; sin datos de quien escanea; retención de 7, 30 y 90 días; borrado de cuenta ≤ 24 h; fotos sin metadatos; WhatsApp con aceptación expresa; derechos ARCO (FR-003a); inventario de datos en la spec; OsmAnd por HTTPS y GT06 sin cifrado bajo las condiciones de la regla "Transporte desde el hardware" (v1.1.0), con filtro de plausibilidad ([research R5 y R16](research.md)) | ✅ |
 | IV. Español primero | i18next con es-MX base; lint contra textos literales; formatos con `Intl` | ✅ |
-| V. Móvil primero y placa ligera | App del dueño móvil; página pública estática sin sesión con presupuesto medido en CI | ✅ |
+| V. Móvil primero y placa ligera | App del dueño móvil; página pública como ruta de servidor de Expo, HTML sin JS ni sesión (LCP 0.9 s medido), con presupuesto verificado en CI | ✅ |
 | VI. Costos visibles | Costo por dispositivo documentado por decisión y en tabla resumen | ✅ |
 | VII. Pruebas primero en alertas y geocercas | Lógica pura en `packages/domain`; las pruebas (incluidos bordes, imprecisión, duplicados, desorden) se escriben y fallan antes de implementar | ✅ |
 | VIII. Un solo código base | Android, iOS y web desde `apps/mobile`; sin código por plataforma salvo el aviso de "descarga la app" en web ([research R2](research.md)) | ✅ |
@@ -94,7 +94,7 @@ apps/
 │   │   ├── app/                 # rutas de Expo Router (convención del SDK 57)
 │   │   │   ├── (auth)/          # celular, código, aviso de privacidad
 │   │   │   ├── (owner)/         # mascotas, mapa, historial, zonas, familia, placa
-│   │   │   └── p/[code].tsx     # página pública de la placa (web)
+│   │   │   └── p/[code]+api.ts  # página pública de la placa: ruta de servidor, HTML sin JS
 │   │   ├── components/
 │   │   ├── api/                 # cliente tipado de contracts/app-api.md
 │   │   ├── i18n/                # es-MX (base), en (preparado)
@@ -140,8 +140,8 @@ Sin violaciones de la constitución que justificar.
 
 ## Riesgos abiertos
 
-- **Presupuesto de la página pública**: el bundle de React Native Web podría superar 200 KB;
-  se mide desde la primera iteración y existe contingencia (research R3).
+- **Presupuesto de la página pública**: resuelto con la ruta de servidor de Expo (research R3);
+  la web ahora requiere el servidor de Expo en la VM en lugar de un CDN estático.
 - **Plantillas de WhatsApp**: requieren aprobación de Meta y una cuenta de negocio verificada;
   tramitar al inicio, porque bloquean FR-001 y FR-013a en producción.
 - **Frecuencia de reporte del rastreador**: SC-002 depende de reportes ≤ 60 s; validar con el

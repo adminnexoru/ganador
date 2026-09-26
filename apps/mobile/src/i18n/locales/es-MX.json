@@ -94,10 +94,27 @@
     "title": "Zonas seguras"
   },
   "tag": {
-    "title": "Placa NFC/QR"
+    "title": "Placa NFC/QR",
+    "active": "Placa activa: {{code}}",
+    "disable": "Desvincular o reportar perdida",
+    "whatsappNotice": "Quien encuentre a tu mascota podrá escribirte por WhatsApp con un botón en la página de la placa. Tu número va dentro de ese enlace, aunque no se muestra como texto.",
+    "confirmWhatsapp": "¿Tu número {{phone}} tiene WhatsApp? Es el único medio de contacto de la página de la placa.",
+    "confirmWhatsappYes": "Sí, tiene WhatsApp",
+    "scan": "Escanear el QR de la placa",
+    "orType": "O escribe el código impreso en la placa:",
+    "codeLabel": "Código de la placa",
+    "codePlaceholder": "ABCD2345EF",
+    "activate": "Activar placa"
   },
   "publicProfile": {
-    "title": "Página pública"
+    "title": "Página pública",
+    "help": "Elige qué datos ve quien escanee la placa de tu mascota. La foto y el nombre de tu mascota siempre se muestran. Tu dirección nunca se publica.",
+    "ownerName": "Mostrar mi nombre",
+    "conditions": "Mostrar enfermedades",
+    "medications": "Mostrar medicamentos",
+    "preview": "Así se verá",
+    "whatsappFixed": "El botón de WhatsApp siempre aparece: es el único medio de contacto.",
+    "saved": "Cambios guardados."
   },
   "family": {
     "title": "Familia"
@@ -108,5 +125,18 @@
   "settings": {
     "title": "Ajustes",
     "short": "Ajustes"
+  },
+  "public": {
+    "foundDog": "¡Encontraste a este perrito!",
+    "foundCat": "¡Encontraste a este gatito!",
+    "owner": "Su familia: {{name}}",
+    "conditions": "Enfermedades: {{text}}",
+    "medications": "Medicamentos: {{text}}",
+    "whatsapp": "Enviar WhatsApp a su familia",
+    "noData": "Esta página no guarda tu ubicación ni tus datos.",
+    "inactiveTitle": "Placa no activa",
+    "inactiveBody": "Esta placa todavía no está vinculada a ninguna mascota.",
+    "error": "No pudimos cargar la información. Revisa tu conexión e intenta de nuevo.",
+    "photoOf": "Foto de {{name}}"
   }
 }

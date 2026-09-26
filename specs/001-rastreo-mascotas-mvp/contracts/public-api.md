@@ -63,7 +63,15 @@ Código inexistente. Mismo cuerpo visual que "placa no activa" en la web.
 
 ## Ruta web `/p/[codigo]`
 
-- Muestra foto, nombre y los datos autorizados.
+Ruta de servidor de Expo Router (`apps/mobile/src/app/p/[code]+api.ts`) que consulta
+`GET /public/tags/{code}` y responde HTML ya armado, sin JavaScript (research R3):
+
+- `200` con foto, nombre y los datos autorizados; `404` si el código no existe; `503` si la API
+  no responde. Placa inactiva: `200` con "Placa no activa".
 - Un solo botón "Enviar WhatsApp" que abre `owner.whatsappUrl`; sin botón de llamada ni número
   visible como texto.
-- Presupuesto de rendimiento: ver research R3.
+- `Cache-Control: no-store` y `Referrer-Policy: no-referrer`.
+- Reenvía `X-Forwarded-For` a la API solo para el límite por origen en memoria; la API confía
+  en ese encabezado únicamente desde proxies de la red privada.
+- Presupuesto de rendimiento: ver research R3 (medición automática con
+  `pnpm --filter @ganador/mobile lighthouse`).

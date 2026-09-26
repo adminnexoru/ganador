@@ -40,7 +40,6 @@ function RootStack() {
         <Stack.Screen name="(owner)" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Screen name="aviso-de-privacidad" options={{ title: t('privacy.title') }} />
-      <Stack.Screen name="p/[code]" options={{ headerShown: false }} />
     </Stack>
   );
 }

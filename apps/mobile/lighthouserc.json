@@ -1,0 +1,9 @@
+{
+  "description": "Presupuesto de la página pública de la placa (research R3, SC-003). Perfil móvil con Slow 4G simulado y CPU 4x.",
+  "url": "/p/AAAAAAAAA2",
+  "budgets": {
+    "maxScriptBytes": 204800,
+    "maxLargestContentfulPaintMs": 5000,
+    "maxTotalBytes": 102400
+  }
+}
