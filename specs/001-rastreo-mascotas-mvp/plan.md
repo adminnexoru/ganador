@@ -90,11 +90,11 @@ specs/001-rastreo-mascotas-mvp/
 ```text
 apps/
 ├── mobile/                      # Expo + Expo Router: Android, iOS y web
-│   ├── app/
-│   │   ├── (auth)/              # celular, código, aviso de privacidad
-│   │   ├── (owner)/             # mascotas, mapa, historial, zonas, familia, placa
-│   │   └── p/[code].tsx         # página pública de la placa (web)
 │   ├── src/
+│   │   ├── app/                 # rutas de Expo Router (convención del SDK 57)
+│   │   │   ├── (auth)/          # celular, código, aviso de privacidad
+│   │   │   ├── (owner)/         # mascotas, mapa, historial, zonas, familia, placa
+│   │   │   └── p/[code].tsx     # página pública de la placa (web)
 │   │   ├── components/
 │   │   ├── api/                 # cliente tipado de contracts/app-api.md
 │   │   ├── i18n/                # es-MX (base), en (preparado)

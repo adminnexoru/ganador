@@ -1,0 +1,82 @@
+# Entorno local y de servidor único (research R9).
+# Desarrollo: docker compose -f infra/docker-compose.yml --env-file .env up -d db traccar
+name: ganador
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ganador}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ganador}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ganador}"]
+      interval: 10s
+      retries: 5
+
+  traccar:
+    image: traccar/traccar:6.9
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      CONFIG_USE_ENVIRONMENT_VARIABLES: "true"
+      DATABASE_DRIVER: org.postgresql.Driver
+      DATABASE_URL: jdbc:postgresql://db:5432/traccar
+      DATABASE_USER: ${POSTGRES_USER:-ganador}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-ganador}
+      # Solo en desarrollo se aceptan dispositivos desconocidos (constitución v1.1.0).
+      DATABASE_REGISTERUNKNOWN: ${TRACCAR_REGISTER_UNKNOWN:-false}
+      # Reenvío al backend con secreto compartido. En desarrollo la API corre en el
+      # host; en el servidor, TRACCAR_FORWARD_BASE=http://api:3000.
+      FORWARD_URL: ${TRACCAR_FORWARD_BASE:-http://host.docker.internal:3000}/ingest/traccar/positions
+      FORWARD_HEADER: "X-Ingest-Secret: ${INGEST_SECRET}"
+      EVENT_FORWARD_URL: ${TRACCAR_FORWARD_BASE:-http://host.docker.internal:3000}/ingest/traccar/events
+      EVENT_FORWARD_HEADER: "X-Ingest-Secret: ${INGEST_SECRET}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro
+    ports:
+      # GT06: protocolo sin cifrado aceptado bajo "Transporte desde el hardware".
+      - "5023:5023"
+      # OsmAnd/Traccar Client: en producción NO se publica; Caddy lo expone por HTTPS
+      # en track.ganador.nexoru.ai. En desarrollo se publica solo para la LAN con
+      # TRACCAR_OSMAND_BIND=0.0.0.0.
+      - "${TRACCAR_OSMAND_BIND:-127.0.0.1}:5055:5055"
+      # Interfaz web de Traccar: solo local.
+      - "127.0.0.1:8082:8082"
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    profiles: ["server"]
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-ganador}:${POSTGRES_PASSWORD:-ganador}@db:5432/ganador
+      TRACCAR_URL: http://traccar:8082
+    depends_on:
+      db:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2
+    profiles: ["server"]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - api
+      - traccar
+
+volumes:
+  db-data:
+  caddy-data:

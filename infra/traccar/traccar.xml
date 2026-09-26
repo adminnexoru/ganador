@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+<!--
+  Traccar se usa solo como capa de ingesta (research R5). Base de datos y
+  database.registerUnknown se configuran por variables de entorno en docker-compose.
+-->
+<properties>
+    <!-- Solo los protocolos que usamos. -->
+    <entry key='protocols.enable'>osmand,gt06</entry>
+    <entry key='osmand.port'>5055</entry>
+    <entry key='gt06.port'>5023</entry>
+
+    <!-- Reenvío de posiciones y eventos al backend. URL y encabezado X-Ingest-Secret
+         vienen de FORWARD_URL, FORWARD_HEADER, EVENT_FORWARD_URL y EVENT_FORWARD_HEADER. -->
+    <entry key='forward.enable'>true</entry>
+    <entry key='forward.json'>true</entry>
+    <entry key='event.forward.enable'>true</entry>
+
+    <!-- Las geocercas y notificaciones son nuestras, no de Traccar. -->
+    <entry key='notificator.types'></entry>
+</properties>

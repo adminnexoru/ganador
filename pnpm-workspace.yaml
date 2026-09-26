@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "tools/*"
+
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  unrs-resolver: true
