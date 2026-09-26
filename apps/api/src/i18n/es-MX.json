@@ -1,0 +1,35 @@
+{
+  "errors": {
+    "not_found": "No encontramos lo que buscas.",
+    "forbidden": "No tienes permiso para hacer esto.",
+    "unauthorized": "Tu sesión no es válida. Vuelve a iniciar sesión.",
+    "consent_required": "Necesitas aceptar el aviso de privacidad para continuar.",
+    "validation_error": "Revisa los datos enviados.",
+    "invalid_phone": "Ingresa un número de celular válido de 10 dígitos.",
+    "too_many_codes": "Pediste demasiados códigos. Intenta de nuevo en una hora.",
+    "invalid_code": "El código no es válido o ya venció.",
+    "invalid_refresh_token": "Tu sesión venció. Vuelve a iniciar sesión.",
+    "notice_version_mismatch": "El aviso de privacidad cambió. Revísalo de nuevo.",
+    "device_already_linked": "Este rastreador ya está vinculado a otra mascota.",
+    "pet_already_has_device": "Esta mascota ya tiene un rastreador vinculado.",
+    "tag_already_active": "Esta placa ya está activa en otra mascota.",
+    "whatsapp_not_confirmed": "Confirma que tu número tiene WhatsApp antes de activar una placa.",
+    "date_out_of_range": "Solo puedes consultar los últimos 7 días.",
+    "rate_limited": "Demasiadas solicitudes. Intenta de nuevo en un momento.",
+    "unsupported_image": "Sube una foto en formato JPEG, PNG o WebP de hasta 10 MB.",
+    "invitation_not_found": "No encontramos esa invitación.",
+    "cannot_invite_self": "No puedes invitarte a ti mismo.",
+    "internal_error": "Ocurrió un error. Intenta de nuevo."
+  },
+  "push": {
+    "zone_exit": { "title": "{{pet}} salió de {{zone}}", "body": "Salió a las {{time}}. Abre la app para ver dónde está." },
+    "zone_enter": { "title": "{{pet}} regresó a {{zone}}", "body": "Entró a las {{time}}." },
+    "battery_low": { "title": "Batería baja en el rastreador de {{pet}}", "body": "Queda {{level}} %. Cárgalo pronto." },
+    "signal_lost": { "title": "Sin señal del rastreador de {{pet}}", "body": "No reporta desde las {{time}}." },
+    "tag_viewed": { "title": "Alguien consultó la placa de {{pet}}", "body": "{{count}} consulta(s), la última a las {{time}}." },
+    "invitation": { "title": "Te invitaron a seguir a {{pet}}", "body": "Abre la app para aceptar la invitación." }
+  },
+  "whatsapp": {
+    "public_message": "Hola, encontré a {{pet}}. Te escribo desde su placa."
+  }
+}

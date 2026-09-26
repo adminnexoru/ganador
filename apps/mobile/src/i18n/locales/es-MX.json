@@ -1,1 +1,48 @@
-{}
+{
+  "common": {
+    "back": "Atrás",
+    "error": "Ocurrió un error. Intenta de nuevo.",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "retry": "Reintentar",
+    "offline": "Sin conexión, datos de las {{time}}"
+  },
+  "web": {
+    "downloadTitle": "Usa la app de Ganador",
+    "downloadBody": "Para ver dónde está tu mascota y recibir alertas, descarga la app de Ganador en tu celular Android o iPhone."
+  },
+  "auth": {
+    "welcome": "Bienvenido a Ganador",
+    "phoneTitle": "Tu número",
+    "phoneHelp": "Te enviaremos un código por WhatsApp para entrar. Si no tienes WhatsApp, te llegará por SMS.",
+    "phoneLabel": "Número de celular (10 dígitos)",
+    "phonePlaceholder": "55 1234 5678",
+    "sendCode": "Enviar código",
+    "codeTitle": "Código de acceso",
+    "codeHelp": "Escribe el código de 6 dígitos que enviamos al {{phone}}.",
+    "codeLabel": "Código",
+    "verify": "Entrar",
+    "resend": "Enviar otro código",
+    "codeResent": "Te enviamos un código nuevo."
+  },
+  "privacy": {
+    "title": "Aviso de privacidad",
+    "accept": "Acepto el aviso de privacidad",
+    "decline": "No acepto, salir"
+  },
+  "whatsapp": {
+    "title": "Alertas por WhatsApp",
+    "explain": "Además de las notificaciones de la app, podemos avisarte por WhatsApp cuando tu mascota salga de una zona segura.",
+    "consentText": "Al aceptar, autorizas que Ganador te envíe por WhatsApp alertas de salida de zona de tus mascotas. Puedes desactivarlas cuando quieras en Ajustes.",
+    "accept": "Sí, quiero alertas por WhatsApp",
+    "skip": "Ahora no"
+  },
+  "notifications": {
+    "channelName": "Alertas de tus mascotas"
+  },
+  "pets": {
+    "title": "Mis mascotas",
+    "empty": "Aún no tienes mascotas registradas."
+  }
+}

@@ -26,7 +26,7 @@ expo-secure-store, expo-localization, react-native-maps, i18next/react-i18next. 
 Fastify, Zod, Drizzle ORM, pg-boss. Ingesta: Traccar. Mensajería: WhatsApp Cloud API y un
 proveedor de SMS de respaldo.
 
-**Storage**: PostgreSQL 16 + PostGIS (bases `ganador` y `traccar`); almacenamiento de objetos
+**Storage**: PostgreSQL 17 + PostGIS (bases `ganador` y `traccar`); almacenamiento de objetos
 compatible con S3 para fotos; `expo-secure-store` para tokens en el celular.
 
 **Testing**: Vitest (dominio y API, incluidas pruebas de contrato e integración con PostgreSQL

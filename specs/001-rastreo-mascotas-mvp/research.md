@@ -121,7 +121,7 @@ contratar** y actualizarse aquí con la fecha de consulta real.
 
 ## R7. Almacenamiento
 
-- **Decision**: **PostgreSQL 16 + PostGIS**, una base `ganador` para el backend y otra `traccar`
+- **Decision**: **PostgreSQL 17 + PostGIS**, una base `ganador` para el backend y otra `traccar`
   para Traccar, en el mismo servidor. Fotos en almacenamiento de objetos compatible con S3.
 - **Volumen estimado**: 5,000 dispositivos × ~300 posiciones/día (cada 60 s en movimiento,
   cada 10–30 min en reposo) ≈ 1.5 M posiciones/día; con retención de 7 días ≈ 10.5 M filas

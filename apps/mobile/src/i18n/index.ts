@@ -1,5 +1,5 @@
 import { getLocales } from 'expo-localization';
-import i18n from 'i18next';
+import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import en from './locales/en.json';
@@ -17,6 +17,7 @@ export function detectLocale(): SupportedLocale {
   return tag.startsWith('en') && ENGLISH_ENABLED ? 'en' : 'es-MX';
 }
 
+const i18n = createInstance();
 void i18n.use(initReactI18next).init({
   resources: { 'es-MX': { translation: esMX }, en: { translation: en } },
   lng: detectLocale(),
