@@ -21,7 +21,7 @@ export async function GET(request: Request, { code }: Record<string, string>) {
     tag = undefined;
   }
   const status = tag === null ? 404 : tag === undefined ? 503 : 200;
-  return new Response(renderPublicPage(tag, { apiUrl: PUBLIC_API_URL }), {
+  return new Response(renderPublicPage(tag, { apiUrl: PUBLIC_API_URL, telemetry: true }), {
     status,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',

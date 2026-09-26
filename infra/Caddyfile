@@ -1,0 +1,29 @@
+# HTTPS automático (Let's Encrypt). Caddy no escribe registros de acceso salvo que se active
+# `log`: así ninguna IP de quien consulta la página pública se registra (FR-024a).
+{
+	email {$ACME_EMAIL:admin@nexoru.ai}
+}
+
+# Web: página pública de la placa y aviso de privacidad (servidor de Expo, research R3).
+ganador.nexoru.ai {
+	encode zstd gzip
+	reverse_proxy web:8081
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+	}
+}
+
+# API de la app y página pública.
+api.ganador.nexoru.ai {
+	encode zstd gzip
+	reverse_proxy api:3000
+	header Strict-Transport-Security "max-age=31536000"
+}
+
+# Ingesta cifrada de rastreadores OsmAnd / Traccar Client (constitución v1.1.0,
+# "Transporte desde el hardware"). El puerto 5055 no se publica a internet.
+track.ganador.nexoru.ai {
+	reverse_proxy traccar:5055
+}

@@ -3,11 +3,13 @@ import type { FastifyInstance } from 'fastify';
 import { accessRoutes } from './access';
 import { authRoutes } from './auth';
 import { deviceRoutes } from './devices';
+import { healthRoutes } from './health';
 import { ingestRoutes } from './ingest';
 import { meRoutes } from './me';
 import { petRoutes } from './pets';
 import { publicRoutes } from './public';
 import { tagRoutes } from './tags';
+import { telemetryRoutes } from './telemetry';
 import { trackRoutes } from './track';
 import { zoneRoutes } from './zones';
 
@@ -22,9 +24,11 @@ export async function registerRoutes(app: FastifyInstance) {
       await zoneRoutes(v1);
       await trackRoutes(v1);
       await accessRoutes(v1);
+      await telemetryRoutes(v1);
     },
     { prefix: '/v1' },
   );
+  await app.register(healthRoutes);
   await app.register(publicRoutes, { prefix: '/public' });
   await app.register(ingestRoutes, { prefix: '/ingest' });
 }

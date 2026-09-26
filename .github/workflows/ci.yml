@@ -31,6 +31,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm --filter @ganador/mobile check:i18n
+      - run: pnpm --filter @ganador/api check:adapters
       - run: pnpm typecheck
       - run: pnpm test
 

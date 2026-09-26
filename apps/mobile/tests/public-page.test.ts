@@ -28,8 +28,14 @@ describe('página pública de la placa', () => {
     expect(visible).not.toContain('5512345678');
   });
 
-  it('no carga JavaScript', () => {
+  it('no carga JavaScript externo; la medición en línea pesa menos de 1 KB', () => {
     expect(renderPublicPage(active, opts)).not.toMatch(/<script/i);
+    const html = renderPublicPage(active, { ...opts, telemetry: true });
+    expect(html).not.toMatch(/<script[^>]+src=/i);
+    const inline = html.match(/<script>([\s\S]*?)<\/script>/)![1]!;
+    expect(inline.length).toBeLessThan(1024);
+    expect(inline).toContain('public_contact_visible');
+    expect(inline).not.toMatch(/Firulais|5512345678/);
   });
 
   it('escapa el contenido', () => {

@@ -5,7 +5,6 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "delete": "Eliminar",
-    "retry": "Reintentar",
     "offline": "Sin conexión, datos de las {{time}}"
   },
   "web": {

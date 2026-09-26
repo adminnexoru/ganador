@@ -25,7 +25,14 @@ function page(title: string, body: string, privacyUrl: string, extraHead = '') {
   return `<!doctype html><html lang="es-MX"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escapeHtml(title)}</title><style>${CSS}</style>${extraHead}</head><body><main><div class="card">${body}</div><footer><a href="${privacyUrl}">${escapeHtml(strings.privacyTitle)}</a></footer></main></body></html>`;
 }
 
-export type RenderOptions = { apiUrl: string; privacyUrl?: string; timingScript?: string };
+export type RenderOptions = { apiUrl: string; privacyUrl?: string; telemetry?: boolean };
+
+/**
+ * Único JavaScript de la página (en línea, < 1 KB): envía con sendBeacon, sin identificadores,
+ * cuánto tardó en aparecer el contacto (research R17, SC-003). No bloquea la pintura.
+ */
+const timingScript = (apiUrl: string) =>
+  `<script>addEventListener('load',function(){try{var p=performance.getEntriesByName('first-contentful-paint')[0];navigator.sendBeacon('${apiUrl}/v1/telemetry/timings',JSON.stringify({metric:'public_contact_visible',ms:Math.round(p?p.startTime:performance.now()),platform:'web'}))}catch(e){}})</script>`;
 
 /** HTML de la página pública; `tag` null = código inexistente, undefined = error de red. */
 export function renderPublicPage(tag: PublicTag | null | undefined, opts: RenderOptions): string {
@@ -52,5 +59,5 @@ export function renderPublicPage(tag: PublicTag | null | undefined, opts: Render
   // Un solo botón de WhatsApp; sin llamada ni número visible (FR-023).
   parts.push(`<a class="wa" id="wa" href="${escapeHtml(tag.owner.whatsappUrl)}">${escapeHtml(strings.whatsapp)}</a>`);
   parts.push(`<p class="small">${escapeHtml(strings.noData)}</p>`);
-  return page(tag.pet.name, parts.join(''), privacyUrl, opts.timingScript ?? '');
+  return page(tag.pet.name, parts.join(''), privacyUrl, opts.telemetry ? timingScript(opts.apiUrl) : '');
 }

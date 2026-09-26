@@ -7,6 +7,7 @@ import {
 } from '@ganador/domain';
 import { z } from 'zod';
 
+import type { TraccarDevice } from './api-client';
 import { profileForProtocol } from './profiles';
 
 // Formato JSON del reenvío de Traccar (forward.json y event.forward). Solo existe aquí.
@@ -108,4 +109,15 @@ export class TraccarAdapter implements DeviceAdapter<TraccarForward> {
       lastSeenAt: data.device.lastUpdate ? date(data.device.lastUpdate) : null,
     };
   }
+}
+
+/** Latidos sin posición a partir de la lista de dispositivos de la API REST de Traccar. */
+export function heartbeatsFromDevices(list: TraccarDevice[]): NeutralDeviceEvent[] {
+  return list
+    .filter((d) => d.lastUpdate)
+    .map((d) => ({
+      kind: 'heartbeat' as const,
+      device: { source: 'traccar' as const, externalId: d.uniqueId },
+      at: date(d.lastUpdate!),
+    }));
 }

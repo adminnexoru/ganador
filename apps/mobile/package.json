@@ -46,6 +46,7 @@
     "jest": "^30.5.2",
     "jest-expo": "^57.0.5",
     "lighthouse": "^13.5.0",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -58,7 +59,8 @@
     "test": "jest",
     "export:web": "expo export --platform web",
     "serve:web": "node server/index.mjs",
-    "lighthouse": "node scripts/lighthouse-public.mjs"
+    "lighthouse": "node scripts/lighthouse-public.mjs",
+    "check:i18n": "tsx scripts/check-i18n.ts"
   },
   "private": true
 }

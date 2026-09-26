@@ -242,15 +242,15 @@ por separado.
 
 **Purpose**: operación, rendimiento, privacidad y costos
 
-- [ ] T101 [P] Configurar Caddy en `infra/Caddyfile`: HTTPS automático, proxy a la API y formato de registro que omite la IP en `/public/*`; sitio `track.ganador.nexoru.ai` con TLS que redirige a `traccar:5055`
-- [ ] T102 [P] Implementar `GET /health` (API, base de datos y Traccar) en `apps/api/src/routes/health.ts` y documentar el monitoreo externo cada minuto y el objetivo de 99.5 % en `infra/README.md`
-- [ ] T103 [P] Implementar el respaldo diario cifrado de PostgreSQL a almacenamiento S3 en `infra/backup/backup.sh` con su programación en `infra/docker-compose.yml`
-- [ ] T104 [P] Crear el script `apps/mobile/scripts/check-i18n.ts` que falla si `en.json` tiene claves que no existen en `es-MX.json` o si hay claves sin uso, y agregarlo a CI
-- [ ] T105 Crear la prueba de carga en `tools/loadtest/ingest.k6.js`: 5,000 dispositivos reportando cada 60 s contra `/ingest/traccar/positions`; verificar procesamiento < 5 s p95 y `GET /pets/{id}/location` rápido para SC-001 y SC-007
+- [X] T101 [P] Configurar Caddy en `infra/Caddyfile`: HTTPS automático, proxy a la API y formato de registro que omite la IP en `/public/*`; sitio `track.ganador.nexoru.ai` con TLS que redirige a `traccar:5055`
+- [X] T102 [P] Implementar `GET /health` (API, base de datos y Traccar) en `apps/api/src/routes/health.ts` y documentar el monitoreo externo cada minuto y el objetivo de 99.5 % en `infra/README.md`
+- [X] T103 [P] Implementar el respaldo diario cifrado de PostgreSQL a almacenamiento S3 en `infra/backup/backup.sh` con su programación en `infra/docker-compose.yml`
+- [X] T104 [P] Crear el script `apps/mobile/scripts/check-i18n.ts` que falla si `en.json` tiene claves que no existen en `es-MX.json` o si hay claves sin uso, y agregarlo a CI
+- [X] T105 Crear la prueba de carga en `tools/loadtest/ingest.k6.js`: 5,000 dispositivos reportando cada 60 s contra `/ingest/traccar/positions`; verificar procesamiento < 5 s p95 y `GET /pets/{id}/location` rápido para SC-001 y SC-007
 - [ ] T106 Verificar los precios con cada proveedor (servidor, WhatsApp, SMS, almacenamiento) y actualizar la tabla de costo por dispositivo con la fecha real de consulta en `specs/001-rastreo-mascotas-mvp/research.md` (principio VI)
-- [ ] T107 Revisar que ningún archivo fuera de `apps/api/src/adapters/` importe tipos o nombres de Traccar (script `apps/api/scripts/check-adapter-boundary.ts` en CI, principio I)
-- [ ] T108 Implementar `POST /telemetry/timings` en `apps/api/src/routes/telemetry.ts` según [contracts/app-api.md](contracts/app-api.md): sin autenticación ni identificadores, sin registrar IP ni agente de usuario, límite de 60/min por origen en memoria, y guardado como conteos diarios por rango en `apps/api/src/db/schema/telemetry.ts`; consulta del percentil 95 por métrica con el script `apps/api/scripts/timings-report.ts`; prueba de contrato en `apps/api/tests/contract/telemetry.test.ts` (research R17)
-- [ ] T109 Enviar las métricas de tiempo desde `apps/mobile/src/telemetry/timings.ts`: `owner_map_visible` desde la apertura de la app hasta que el mapa muestra la ubicación (`apps/mobile/src/app/(owner)/pets/[id]/index.tsx`) y `public_contact_visible` hasta que el botón de WhatsApp es visible (`apps/mobile/src/app/p/[code].tsx`), sin identificadores; en la página pública, con `navigator.sendBeacon` sin afectar el presupuesto de 200 KB
+- [X] T107 Revisar que ningún archivo fuera de `apps/api/src/adapters/` importe tipos o nombres de Traccar (script `apps/api/scripts/check-adapter-boundary.ts` en CI, principio I)
+- [X] T108 Implementar `POST /telemetry/timings` en `apps/api/src/routes/telemetry.ts` según [contracts/app-api.md](contracts/app-api.md): sin autenticación ni identificadores, sin registrar IP ni agente de usuario, límite de 60/min por origen en memoria, y guardado como conteos diarios por rango en `apps/api/src/db/schema/telemetry.ts`; consulta del percentil 95 por métrica con el script `apps/api/scripts/timings-report.ts`; prueba de contrato en `apps/api/tests/contract/telemetry.test.ts` (research R17)
+- [X] T109 Enviar las métricas de tiempo desde `apps/mobile/src/telemetry/timings.ts`: `owner_map_visible` desde la apertura de la app hasta que el mapa muestra la ubicación (`apps/mobile/src/app/(owner)/pets/[id]/index.tsx`) y `public_contact_visible` hasta que el botón de WhatsApp es visible (`apps/mobile/src/app/p/[code].tsx`), sin identificadores; en la página pública, con `navigator.sendBeacon` sin afectar el presupuesto de 200 KB
 - [ ] T110 Ejecutar todos los escenarios de `specs/001-rastreo-mascotas-mvp/quickstart.md` (1–18) y registrar resultados
 
 ---

@@ -4,3 +4,4 @@ export * from './notifications';
 export * from './pets';
 export * from './tags';
 export * from './zones';
+export * from './telemetry';

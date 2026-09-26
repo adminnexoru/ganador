@@ -10,6 +10,8 @@ export type TraccarDevice = {
 export interface TraccarApi {
   createDevice(uniqueId: string, name: string): Promise<void>;
   listDevices(): Promise<TraccarDevice[]>;
+  /** Verdadero si Traccar responde (para /health). */
+  ping(): Promise<boolean>;
 }
 
 /** Cliente REST de Traccar con el usuario de servicio. */
@@ -36,6 +38,15 @@ export class TraccarApiClient implements TraccarApi {
     if (!res.ok && res.status !== 400) throw new Error(`Traccar respondió ${res.status}`);
   }
 
+  async ping() {
+    try {
+      const res = await this.fetchFn(`${this.baseUrl}/api/server`, { signal: AbortSignal.timeout(3000) });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
   async listDevices(): Promise<TraccarDevice[]> {
     const res = await this.fetchFn(`${this.baseUrl}/api/devices?all=true`, { headers: this.headers() });
     if (!res.ok) throw new Error(`Traccar respondió ${res.status}`);
@@ -55,6 +66,11 @@ export class FakeTraccarApi implements TraccarApi {
 
   async listDevices() {
     return [...this.devices.values()];
+  }
+
+  healthy = true;
+  async ping() {
+    return this.healthy;
   }
 
   touch(uniqueId: string, at: Date) {

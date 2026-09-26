@@ -56,6 +56,8 @@ export async function buildApp({
   app.decorate('deps', deps);
 
   registerErrorHandler(app);
+  // navigator.sendBeacon (página pública) envía JSON como text/plain.
+  app.addContentTypeParser('text/plain', { parseAs: 'string' }, (_req, body, done) => done(null, body));
   await app.register(multipart, { limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 } });
   await registerRoutes(app);
 

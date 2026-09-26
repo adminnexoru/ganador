@@ -1,3 +1,4 @@
+import '@/telemetry/timings';
 import '@/i18n';
 
 import { Stack } from 'expo-router';
