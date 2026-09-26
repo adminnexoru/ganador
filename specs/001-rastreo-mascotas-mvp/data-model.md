@@ -20,13 +20,20 @@ Solo los adaptadores conocen formatos de Traccar o de un fabricante.
 | profile | text | perfil de marca/modelo usado por el adaptador (p. ej. `generic-gt06`) |
 | petId | uuid, nulo | mascota vinculada; un dispositivo solo puede estar en una mascota |
 | status | enum | `unlinked`, `linked`, `retired` |
-| lastSeenAt | timestamptz, nulo | hora del último reporte |
-| signalState | enum | `ok`, `lost` |
+| restIntervalS | integer | intervalo de reporte en reposo en segundos (60–86,400); lo fija el adaptador desde el perfil o desde lo que informa el rastreador; el dueño no lo edita |
+| lastSeenAt | timestamptz, nulo | última actividad: posición o latido sin posición |
+| activity | enum | `moving`, `resting`, `no_signal` (FR-009b) |
+| activitySince | timestamptz, nulo | inicio del estado de actividad actual |
 | createdAt | timestamptz | |
 
 **Transiciones**: `unlinked → linked` (el dueño lo vincula); `linked → unlinked` (lo
 desvincula); cualquiera `→ retired`. Vincular un dispositivo `linked` a otra mascota se
 rechaza (edge case de la spec).
+
+**Umbral de señal (derivado)**: `restIntervalS + max(300, restIntervalS / 2)` segundos
+(FR-009a). **Actividad**: `moving ⇄ resting` según desplazamiento y velocidad;
+`moving|resting → no_signal` al superar el umbral sin actividad (genera `signal_lost` una vez);
+`no_signal → moving|resting` con el siguiente reporte (research R8).
 
 ### Position (Posición)
 

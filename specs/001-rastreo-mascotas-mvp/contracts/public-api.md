@@ -9,7 +9,13 @@ en cualquier momento). El servidor **no** registra IP ni agente de usuario para 
 pide ni recibe ubicación (FR-024a). Cada respuesta 200 registra un `TagView` y dispara el
 evento `tag_viewed`.
 
-Limitación: 30 peticiones por minuto por código para evitar abuso de notificaciones.
+Límites (respuesta `429` con `Retry-After`):
+
+- **Por código**: 30 peticiones por minuto, para evitar abuso de notificaciones al dueño.
+- **Por origen**: 60 peticiones por minuto, para frenar el recorrido masivo de códigos. Se
+  aplica solo en memoria temporal: la clave es un HMAC de la IP con un secreto que vive solo en
+  memoria y rota cada 24 h, y el contador expira al minuto. Ni la IP ni su HMAC se guardan en
+  base de datos, registros o respaldos, cumpliendo FR-024a (research R16).
 
 ### 200 — placa activa
 

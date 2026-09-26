@@ -43,7 +43,8 @@ pública).
 < 5 s tras escanear en "Slow 4G" (SC-003); ≈ 1.5 M posiciones/día.
 
 **Constraints**: JavaScript de la ruta pública ≤ 200 KB gzip; sin IP ni ubicación de quien
-escanea; posiciones retenidas 7 días; es-MX sin textos literales; rastreadores que reporten
+escanea (límite por origen solo en memoria, con HMAC rotativo); umbral de señal por
+dispositivo (intervalo en reposo + tolerancia); posiciones retenidas 7 días; es-MX sin textos literales; rastreadores que reporten
 ≤ 60 s en movimiento; desarrollo con Expo Go salvo notificaciones push en Android.
 
 **Scale/Scope**: hasta 5,000 rastreadores activos el primer año; ~15 pantallas del dueño y 1
@@ -101,7 +102,7 @@ apps/
 │   └── tests/
 └── api/                         # Fastify
     ├── src/
-    │   ├── adapters/traccar/    # DeviceAdapter + perfiles por marca
+    │   ├── adapters/traccar/    # DeviceAdapter, perfiles por marca (incl. traccar-client), sondeo de actividad
     │   ├── routes/              # auth, pets, zones, tags, public, ingest
     │   ├── services/            # ingesta, notificaciones, mensajería
     │   ├── jobs/                # pg-boss: señal perdida, limpieza, envíos
@@ -115,11 +116,11 @@ packages/
 └── domain/                      # TS puro, compartido
     ├── src/device/              # modelo neutral
     ├── src/geofence/            # zonas + histéresis
-    ├── src/alerts/              # batería, señal, reglas de notificación
+    ├── src/alerts/              # batería, actividad (movimiento/reposo/sin señal), notificaciones
     └── tests/
 infra/
 ├── docker-compose.yml           # PostgreSQL/PostGIS, Traccar, API, Caddy
-└── traccar/traccar.xml          # reenvío a /ingest/traccar/*
+└── traccar/traccar.xml          # reenvío a /ingest/traccar/*; puerto 5055 para Traccar Client
 tools/
 └── simulator/                   # envía posiciones de prueba a Traccar
 ```

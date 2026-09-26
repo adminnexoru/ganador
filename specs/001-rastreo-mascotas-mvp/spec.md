@@ -35,8 +35,11 @@ confirmar que la ubicación, la hora y la batería aparecen en el mapa.
    **Then** la mascota muestra su ubicación en cuanto el rastreador reporta.
 4. **Given** una mascota con rastreador vinculado, **When** el dueño abre la app, **Then** ve en
    el mapa la última ubicación conocida, la hora de esa ubicación y el nivel de batería.
-5. **Given** que la última ubicación tiene más de 30 minutos, **When** el dueño la consulta,
-   **Then** la app indica claramente que la ubicación no está actualizada y desde cuándo.
+5. **Given** un rastreador que sigue reportando pero no se mueve, **When** el dueño consulta la
+   ubicación, **Then** la app indica "en reposo" y desde cuándo, sin mostrarlo como falla.
+6. **Given** un rastreador que no ha reportado en más de su umbral de señal (su intervalo de
+   reporte en reposo más la tolerancia), **When** el dueño consulta la ubicación, **Then** la
+   app indica "sin señal", que la ubicación no está actualizada y desde cuándo.
 
 ---
 
@@ -94,8 +97,9 @@ batería baja; confirmar que llegan las notificaciones correctas, sin duplicados
    alejado realmente, **Then** no se envían alertas repetidas de salida y entrada.
 5. **Given** un rastreador con batería por encima del umbral, **When** baja al 20 % o menos,
    **Then** el dueño recibe un solo aviso de batería baja hasta que el rastreador se recargue.
-6. **Given** un rastreador que deja de reportar por más de 30 minutos, **Then** el dueño recibe
-   un aviso de pérdida de señal.
+6. **Given** un rastreador que deja de reportar por más de su umbral de señal, **Then** el
+   dueño recibe un aviso de pérdida de señal; un rastreador en reposo que sigue reportando no
+   genera ese aviso.
 
 ---
 
@@ -186,7 +190,13 @@ alertas; revocar el acceso y confirmar que deja de verla.
 
 - **FR-008**: La app DEBE mostrar en un mapa la última ubicación conocida de cada mascota con su
   hora y el nivel de batería del rastreador.
-- **FR-009**: La app DEBE indicar cuándo la ubicación mostrada tiene más de 30 minutos.
+- **FR-009**: La app DEBE indicar que la ubicación no está actualizada cuando el rastreador
+  lleve más de su umbral de señal sin reportar.
+- **FR-009a**: El umbral de señal DEBE calcularse por dispositivo como su intervalo de reporte
+  en reposo más una tolerancia (el mayor entre 5 minutos y la mitad de ese intervalo).
+- **FR-009b**: La app DEBE distinguir entre "en movimiento", "en reposo" (el rastreador reporta
+  dentro de su umbral pero la mascota no se desplaza) y "sin señal" (superó su umbral), e
+  indicar desde cuándo está en cada estado.
 - **FR-010**: Los dueños DEBEN poder consultar el recorrido de cualquiera de los últimos 7 días.
 - **FR-011**: El sistema DEBE eliminar las posiciones con más de 7 días.
 
@@ -203,9 +213,10 @@ alertas; revocar el acceso y confirmar que deja de verla.
   imprecisión de la posición cerca del borde de la zona.
 - **FR-015**: El sistema DEBE avisar una vez cuando la batería llegue al 20 % o menos, y no
   volver a avisar hasta que se recargue por encima de ese nivel.
-- **FR-016**: El sistema DEBE avisar cuando un rastreador deje de reportar por más de 30 minutos.
-- **FR-016a**: En el MVP los umbrales de batería baja (20 %), ubicación desactualizada y pérdida
-  de señal (30 minutos) son fijos; el dueño no puede cambiarlos.
+- **FR-016**: El sistema DEBE avisar una vez por episodio cuando un rastreador supere su umbral
+  de señal (FR-009a) sin reportar; no DEBE avisar mientras la mascota solo esté en reposo.
+- **FR-016a**: En el MVP el dueño no puede cambiar los umbrales: batería baja fija en 20 % y
+  umbral de señal calculado por dispositivo según FR-009a.
 
 **Compartir con la familia**
 
@@ -242,7 +253,8 @@ alertas; revocar el acceso y confirmar que deja de verla.
   dueño y puede compartirse con familiares.
 - **Acceso compartido**: relación entre una mascota y un familiar invitado, con estado
   (invitado, activo, revocado).
-- **Dispositivo**: rastreador vinculado a una mascota, independiente de la marca.
+- **Dispositivo**: rastreador vinculado a una mascota, independiente de la marca; incluye su
+  intervalo de reporte en reposo, del que se deriva su umbral de señal.
 - **Posición**: ubicación reportada por un dispositivo, con hora y precisión; se conserva 7 días.
 - **Evento**: suceso relevante (salida o entrada de zona, batería baja, pérdida de señal,
   consulta de la placa) que puede generar una notificación.
@@ -266,10 +278,10 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **SC-004**: Menos del 5 % de las alertas de zona son falsas (la mascota no salió realmente).
 - **SC-005**: El 90 % de los dueños nuevos completan registro, alta de mascota y vinculación de
   rastreador en menos de 10 minutos sin ayuda.
-- **SC-007**: Los criterios SC-001 a SC-003 se cumplen con hasta 5,000 rastreadores activos
-  reportando al mismo tiempo.
 - **SC-006**: Ninguna página pública muestra datos no autorizados por el dueño ni la dirección
   del domicilio.
+- **SC-007**: Los criterios SC-001 a SC-003 se cumplen con hasta 5,000 rastreadores activos
+  reportando al mismo tiempo.
 
 ## Clarifications
 
@@ -286,7 +298,10 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - Q: ¿Cómo se registra y entra un dueño a su cuenta? → A: Con número de celular y código de
   verificación por WhatsApp o SMS.
 - Q: ¿El dueño puede cambiar los umbrales de batería baja y pérdida de señal? → A: No; en el
-  MVP son fijos (20 % y 30 minutos).
+  MVP no son configurables por el dueño (batería 20 %; señal según FR-009a).
+- Ajuste: el umbral de señal y de ubicación desactualizada deja de ser de 30 minutos fijos y se
+  calcula por dispositivo con su intervalo de reporte en reposo más una tolerancia; la app
+  distingue "en reposo" de "sin señal".
 
 ## Assumptions
 
@@ -303,7 +318,9 @@ alertas; revocar el acceso y confirmar que deja de verla.
   costo mensual por dispositivo activo.
 - Escala del primer año: hasta 5,000 rastreadores activos, principalmente en zonas urbanas de
   México; el costo mensual por dispositivo activo se calcula para ese volumen.
-- Los umbrales fijos de FR-016a podrán volverse ajustables en una versión posterior, con base en
+- El intervalo de reporte en reposo de cada dispositivo se conoce por su modelo o por lo que
+  el propio rastreador informa; no lo captura el dueño.
+- Los umbrales de FR-016a podrán volverse ajustables en una versión posterior, con base en
   datos de uso.
 - El inglés no se habilita en el MVP, pero la interfaz queda preparada para agregarlo.
 - Fuera de alcance: pagos y suscripciones, monitoreo de salud, tienda de dispositivos.

@@ -72,7 +72,13 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   `adapters/` traduce el JSON de Traccar al modelo neutral (dispositivo, posición, evento,
   batería). Las diferencias por marca (por ejemplo, batería como porcentaje o como voltaje,
   nombres de atributos distintos) se resuelven en un **perfil por marca/modelo** dentro del
-  adaptador.
+  adaptador. Cada perfil declara además el **intervalo de reporte en reposo** por defecto del
+  modelo (p. ej. `generic-gt06`: 600 s; `traccar-client`: el configurado en la app, 60 s por
+  defecto); si el rastreador informa su intervalo real, el adaptador usa ese valor.
+- **Actividad sin posición**: muchos rastreadores envían solo *heartbeats* (latidos sin
+  posición) cuando están quietos, y Traccar no los reenvía por `forward.url`. El adaptador
+  consulta cada minuto `GET /api/devices` de Traccar y toma `lastUpdate` como última actividad
+  del dispositivo (`lastSeenAt`), para no confundir reposo con falta de señal.
 - **Rationale**: principio I. Las geocercas, las alertas y el almacenamiento usan solo el modelo
   neutral; Traccar podría reemplazarse o convivir con otro adaptador (por ejemplo, la nube de
   un fabricante) sin tocar el resto. No se usan las geocercas ni las notificaciones de Traccar,
@@ -118,8 +124,17 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   - Posiciones con precisión peor que 100 m, duplicadas o más antiguas que la última procesada
     no cambian el estado de la zona.
   - Batería baja: una alerta al cruzar ≤ 20 %; se rearma al superar 25 % (FR-015).
-  - Pérdida de señal: trabajo cada minuto que busca dispositivos sin reportar en > 30 min;
-    una alerta por episodio (FR-016).
+  - **Umbral de señal por dispositivo** (FR-009a): `umbral = intervaloReposo +
+    max(5 min, intervaloReposo / 2)`. Ejemplos: 60 s → 6 min; 10 min → 15 min; 30 min → 45 min.
+  - **Estado de actividad** (FR-009b), calculado en `packages/domain`:
+    - `no_signal` si `ahora − lastSeenAt > umbral`;
+    - `moving` si la última posición válida tiene velocidad > 1 km/h o se desplazó más de
+      `max(30 m, precisión)` respecto de la anterior;
+    - `resting` en otro caso (reporta dentro del umbral sin desplazarse).
+    - `since` = hora del primer reporte en el estado actual.
+  - Pérdida de señal: trabajo cada minuto que marca `no_signal` a los dispositivos que superan
+    su umbral; una alerta por episodio, rearmada con el siguiente reporte (FR-016). El estado
+    `resting` nunca genera alerta.
 - **Rationale**: cumplir < 2 min (SC-002) exige evaluar al recibir cada posición; con reporte
   cada 60 s en movimiento y confirmación en 2 posiciones, el peor caso ≈ 2 min + entrega.
 - **Supuesto de hardware**: el rastreador debe reportar al menos cada 60 s en movimiento.
@@ -199,6 +214,11 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   - Posiciones: se borran a los 7 días (FR-011).
   - Consultas de placa: solo placa y hora, sin IP ni ubicación (FR-024a); se borran a los 90
     días. Los registros del servidor web no guardan la IP en la ruta `/public/*`.
+  - **Límite por origen en la página pública**: además del límite por código, 60 peticiones
+    por minuto por origen. La clave es un HMAC de la IP con un secreto aleatorio que se genera
+    al arrancar el proceso y se rota cada 24 h, **solo en memoria**; los contadores viven en
+    memoria con expiración de 1 minuto. La IP ni su HMAC se escriben en base de datos, registros
+    ni respaldos. Con varias instancias el límite es por instancia, aceptable a esta escala.
   - Eliminación de cuenta: borrado de datos personales en ≤ 24 h, placas quedan inactivas.
   - Cifrado en tránsito (HTTPS/TLS) y en reposo (disco cifrado y respaldos cifrados).
   - La dirección del domicilio no existe en el modelo de datos.

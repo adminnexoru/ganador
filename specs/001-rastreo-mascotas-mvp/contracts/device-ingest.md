@@ -9,6 +9,13 @@ neutrales definidos en `packages/domain`.
 // packages/domain/src/device/model.ts (forma, no implementación)
 type DeviceRef = { source: 'traccar'; externalId: string };
 
+type NeutralDevice = {
+  device: DeviceRef;
+  profile: string;           // perfil de marca/modelo, p. ej. 'generic-gt06', 'traccar-client'
+  restIntervalS: number;     // intervalo de reporte en reposo; base del umbral de señal
+  lastSeenAt: Date | null;   // última actividad, con o sin posición
+};
+
 type NeutralPosition = {
   device: DeviceRef;
   recordedAt: Date;
@@ -28,16 +35,20 @@ type NeutralBattery = {
 
 type NeutralDeviceEvent =
   | { kind: 'position'; position: NeutralPosition; battery: NeutralBattery | null }
-  | { kind: 'online' | 'offline'; device: DeviceRef; at: Date };
+  | { kind: 'online' | 'offline'; device: DeviceRef; at: Date }
+  | { kind: 'heartbeat'; device: DeviceRef; at: Date };   // actividad sin posición
 
 interface DeviceAdapter<Raw> {
   source: DeviceRef['source'];
   parse(raw: Raw): NeutralDeviceEvent[];   // puro, sin E/S; lanza error tipado si el dato es inválido
+  describe(raw: Raw): NeutralDevice;       // perfil e intervalo en reposo del dispositivo
 }
 ```
 
-Cada perfil de marca/modelo (p. ej. `generic-gt06`) define cómo obtener batería y precisión
-de los atributos del protocolo. Agregar un modelo = agregar un perfil y sus pruebas.
+Cada perfil de marca/modelo (p. ej. `generic-gt06`, `traccar-client`) define cómo obtener
+batería y precisión de los atributos del protocolo y su `restIntervalS` por defecto; si el
+rastreador informa su intervalo real, el adaptador usa ese valor. Agregar un modelo = agregar
+un perfil y sus pruebas.
 
 ## Traccar → backend
 
@@ -73,14 +84,29 @@ compartido en el encabezado `X-Ingest-Secret`.
 ### POST /ingest/traccar/events
 
 Solo se usan `deviceOnline` y `deviceOffline` como señal auxiliar; la alerta de pérdida de
-señal la calcula el backend por tiempo sin reportes (research R8). Los demás eventos de Traccar
-(geocercas, alarmas) se ignoran.
+señal la calcula el backend con el umbral por dispositivo (research R8). Los demás eventos de
+Traccar (geocercas, alarmas) se ignoran.
+
+### Sondeo de actividad: GET /api/devices (Traccar)
+
+Traccar no reenvía los latidos sin posición. Cada minuto el adaptador consulta la API REST de
+Traccar (usuario de servicio de solo lectura) y convierte cada `lastUpdate` más reciente que
+`lastSeenAt` en un evento neutral `heartbeat`. Así un rastreador quieto que sigue latiendo
+queda `resting` y no `no_signal`.
+
+### Alta en Traccar al vincular
+
+En producción Traccar no acepta dispositivos desconocidos. Cuando el dueño vincula un
+dispositivo (`POST /pets/{id}/device`), el adaptador lo registra en Traccar con
+`POST /api/devices` usando `externalId` como `uniqueId`. En desarrollo se permite
+`database.registerUnknown=true` (quickstart, Traccar Client).
 
 ## Pipeline tras el adaptador
 
 1. Resolver `DeviceRef` → `Device` vinculado; si no existe o no está vinculado, descartar.
 2. Guardar `Position` y `BatteryReading` (descarta duplicados por `(deviceId, recordedAt)`).
-3. Evaluar reglas puras de `packages/domain` (zonas, batería) → `DeviceEvent[]`.
+3. Actualizar `lastSeenAt` y `activity`; evaluar reglas puras de `packages/domain` (zonas,
+   batería, actividad) → `DeviceEvent[]`.
 4. Encolar notificaciones (pg-boss) → push y, para `zone_exit`, WhatsApp.
 
 Objetivo: pasos 1–4 en < 5 s por posición (p95), dejando margen para SC-002.

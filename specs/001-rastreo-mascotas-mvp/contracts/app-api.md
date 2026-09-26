@@ -39,7 +39,7 @@ Mientras `needsConsent` sea verdadero, todo endpoint fuera de `/auth/*`, `/priva
 
 | Método y ruta | Permiso | Notas |
 |---------------|---------|-------|
-| `POST /pets/{id}/device` | O | `{ externalId }` (IMEI); `409` si ya está vinculado a otra mascota |
+| `POST /pets/{id}/device` | O | `{ externalId }` (IMEI o identificador que muestra el rastreador, p. ej. Traccar Client); `409` si ya está vinculado a otra mascota |
 | `DELETE /pets/{id}/device` | O | |
 | `GET /pets/{id}/location` | F | ver abajo |
 | `GET /pets/{id}/track?date=YYYY-MM-DD` | F | posiciones del día (zona horaria del usuario); `400` si la fecha tiene más de 7 días |
@@ -50,12 +50,16 @@ Mientras `needsConsent` sea verdadero, todo endpoint fuera de `/auth/*`, `/priva
 {
   "position": { "lat": 19.4326, "lng": -99.1332, "accuracyM": 12, "recordedAt": "2026-09-25T18:02:11Z" },
   "battery": { "levelPct": 64, "recordedAt": "2026-09-25T18:02:11Z" },
-  "stale": false,
-  "signalState": "ok"
+  "activity": "resting",
+  "activitySince": "2026-09-25T17:40:00Z",
+  "stale": false
 }
 ```
 
-`stale` es verdadero si `recordedAt` tiene más de 30 minutos (FR-009).
+`activity` es `moving`, `resting` o `no_signal`, con `activitySince` como inicio del estado
+(FR-009b). `stale` es verdadero solo cuando `activity` es `no_signal`, es decir, cuando el
+dispositivo superó su umbral de señal (intervalo en reposo + tolerancia, FR-009a); una
+mascota en reposo no se marca como desactualizada aunque su última posición sea antigua.
 
 ## Zonas seguras (FR-012)
 
