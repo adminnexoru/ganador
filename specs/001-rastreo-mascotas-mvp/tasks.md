@@ -176,23 +176,23 @@ por separado.
 
 ### Tests for User Story 3 ⚠️ (principio VII: escribir primero y confirmar que fallan)
 
-- [ ] T079 [P] [US3] Escribir pruebas de geocercas en `packages/domain/tests/geofence.test.ts`: círculo con radio 50–2,000 m; salida solo si la distancia fuera del borde supera `max(30 m, precisión)` en 2 posiciones consecutivas, o en 1 si está a más de 150 m; entrada simétrica; posiciones que oscilan ±20 m en el borde no generan eventos; precisión peor que 100 m, duplicadas o fuera de orden no cambian el estado; estado inicial `unknown` no genera alerta
-- [ ] T080 [P] [US3] Escribir pruebas de batería en `packages/domain/tests/battery.test.ts`: una alerta al cruzar ≤ 20 %; se rearma al superar 25 %; la secuencia 25 → 19 → 18 → 30 → 19 produce exactamente 2 alertas
-- [ ] T081 [P] [US3] Escribir pruebas de alerta de señal en `packages/domain/tests/signal-alert.test.ts`: una alerta `signal_lost` por episodio al pasar a `no_signal`; se rearma con el siguiente reporte; `resting` nunca genera alerta
-- [ ] T082 [P] [US3] Escribir pruebas de contrato de zonas en `apps/api/tests/contract/zones.test.ts`: crear, editar, desactivar y borrar; `radiusM` fuera de 50–2,000 → `400`; familiar → `403` al crear o editar y `200` al listar
-- [ ] T083 [P] [US3] Escribir la prueba de integración del flujo de salida en `apps/api/tests/integration/zone-exit-flow.test.ts`: posiciones por `/ingest/traccar/positions` que salen de una zona → un `zone_exit`, push al dueño y al familiar, WhatsApp a quien lo tenga activado; si el proveedor de WhatsApp falla, el push se envía igual; tiempo desde la ingesta hasta el encolado < 5 s
+- [X] T079 [P] [US3] Escribir pruebas de geocercas en `packages/domain/tests/geofence.test.ts`: círculo con radio 50–2,000 m; salida solo si la distancia fuera del borde supera `max(30 m, precisión)` en 2 posiciones consecutivas, o en 1 si está a más de 150 m; entrada simétrica; posiciones que oscilan ±20 m en el borde no generan eventos; precisión peor que 100 m, duplicadas o fuera de orden no cambian el estado; estado inicial `unknown` no genera alerta
+- [X] T080 [P] [US3] Escribir pruebas de batería en `packages/domain/tests/battery.test.ts`: una alerta al cruzar ≤ 20 %; se rearma al superar 25 %; la secuencia 25 → 19 → 18 → 30 → 19 produce exactamente 2 alertas
+- [X] T081 [P] [US3] Escribir pruebas de alerta de señal en `packages/domain/tests/signal-alert.test.ts`: una alerta `signal_lost` por episodio al pasar a `no_signal`; se rearma con el siguiente reporte; `resting` nunca genera alerta
+- [X] T082 [P] [US3] Escribir pruebas de contrato de zonas en `apps/api/tests/contract/zones.test.ts`: crear, editar, desactivar y borrar; `radiusM` fuera de 50–2,000 → `400`; familiar → `403` al crear o editar y `200` al listar
+- [X] T083 [P] [US3] Escribir la prueba de integración del flujo de salida en `apps/api/tests/integration/zone-exit-flow.test.ts`: posiciones por `/ingest/traccar/positions` que salen de una zona → un `zone_exit`, push al dueño y al familiar, WhatsApp a quien lo tenga activado; si el proveedor de WhatsApp falla, el push se envía igual; tiempo desde la ingesta hasta el encolado < 5 s
 
 ### Implementation for User Story 3
 
-- [ ] T084 [US3] Implementar `evaluateZone()` en `packages/domain/src/geofence/evaluate.ts` (distancia haversine, histéresis y descarte de posiciones) hasta pasar `packages/domain/tests/geofence.test.ts`
-- [ ] T085 [US3] Implementar `evaluateBattery()` en `packages/domain/src/alerts/battery.ts` hasta pasar `packages/domain/tests/battery.test.ts`
-- [ ] T086 [US3] Implementar `evaluateSignal()` en `packages/domain/src/alerts/signal.ts` hasta pasar `packages/domain/tests/signal-alert.test.ts`
-- [ ] T087 [US3] Conectar las reglas en `apps/api/src/services/ingest.ts`: `evaluateRules()` carga zonas activas y `zone_states`, aplica `evaluateZone()` y `evaluateBattery()`, guarda estados y `DeviceEvent`, y llama al despachador de notificaciones
-- [ ] T088 [US3] Conectar `evaluateSignal()` en `apps/api/src/jobs/activity-sweep.ts` para emitir `signal_lost` una vez por episodio y en `apps/api/src/services/ingest.ts` para rearmarla con el siguiente reporte
-- [ ] T089 [US3] Implementar las rutas de zonas en `apps/api/src/routes/zones.ts`: `GET /pets/{id}/zones` (F), `POST /pets/{id}/zones`, `PATCH /zones/{zoneId}`, `DELETE /zones/{zoneId}` (O)
-- [ ] T090 [P] [US3] Implementar la pantalla de zonas en `apps/mobile/src/app/(owner)/pets/[id]/zones.tsx`: lista, crear tocando el mapa, ajustar radio de 50 a 2,000 m, nombre, activar/desactivar; controles de edición ocultos para familiares
-- [ ] T091 [P] [US3] Implementar el manejo de notificaciones en `apps/mobile/src/notifications/handlers.ts`: al tocar una alerta abre el mapa de la mascota del `petId`
-- [ ] T092 [P] [US3] Implementar la pantalla de ajustes en `apps/mobile/src/app/(owner)/settings.tsx` con el interruptor de alertas por WhatsApp (`PATCH /me`) que muestra el texto de consentimiento antes de activar, el botón "Descargar mis datos" (`GET /me/export`, compartido con el menú del sistema) y la opción de eliminar la cuenta
+- [X] T084 [US3] Implementar `evaluateZone()` en `packages/domain/src/geofence/evaluate.ts` (distancia haversine, histéresis y descarte de posiciones) hasta pasar `packages/domain/tests/geofence.test.ts`
+- [X] T085 [US3] Implementar `evaluateBattery()` en `packages/domain/src/alerts/battery.ts` hasta pasar `packages/domain/tests/battery.test.ts`
+- [X] T086 [US3] Implementar `evaluateSignal()` en `packages/domain/src/alerts/signal.ts` hasta pasar `packages/domain/tests/signal-alert.test.ts`
+- [X] T087 [US3] Conectar las reglas en `apps/api/src/services/ingest.ts`: `evaluateRules()` carga zonas activas y `zone_states`, aplica `evaluateZone()` y `evaluateBattery()`, guarda estados y `DeviceEvent`, y llama al despachador de notificaciones
+- [X] T088 [US3] Conectar `evaluateSignal()` en `apps/api/src/jobs/activity-sweep.ts` para emitir `signal_lost` una vez por episodio y en `apps/api/src/services/ingest.ts` para rearmarla con el siguiente reporte
+- [X] T089 [US3] Implementar las rutas de zonas en `apps/api/src/routes/zones.ts`: `GET /pets/{id}/zones` (F), `POST /pets/{id}/zones`, `PATCH /zones/{zoneId}`, `DELETE /zones/{zoneId}` (O)
+- [X] T090 [P] [US3] Implementar la pantalla de zonas en `apps/mobile/src/app/(owner)/pets/[id]/zones.tsx`: lista, crear tocando el mapa, ajustar radio de 50 a 2,000 m, nombre, activar/desactivar; controles de edición ocultos para familiares
+- [X] T091 [P] [US3] Implementar el manejo de notificaciones en `apps/mobile/src/notifications/handlers.ts`: al tocar una alerta abre el mapa de la mascota del `petId`
+- [X] T092 [P] [US3] Implementar la pantalla de ajustes en `apps/mobile/src/app/(owner)/settings.tsx` con el interruptor de alertas por WhatsApp (`PATCH /me`) que muestra el texto de consentimiento antes de activar, el botón "Descargar mis datos" (`GET /me/export`, compartido con el menú del sistema) y la opción de eliminar la cuenta
 
 **Checkpoint**: las tres historias P1 funcionan; el MVP crítico está completo
 

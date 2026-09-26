@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 
 import { sendPushJob, sendWhatsappJob } from '../services/notifications';
+import { registerRules } from '../services/rules';
 import { sweepActivity } from './activity-sweep';
 import { deleteAccount } from './delete-account';
 import { runRetention } from './retention';
@@ -10,6 +11,7 @@ import { pollTraccarActivity } from './traccar-poll';
 /** Registra los trabajos en la cola (research R6). */
 export async function registerJobs(app: FastifyInstance) {
   const { deps } = app;
+  registerRules();
   await deps.queue.work<{ ownerId: string }>('delete-account', (d) => deleteAccount(deps, d));
   await deps.queue.work('send-push', (d: Parameters<typeof sendPushJob>[1]) => sendPushJob(deps, d));
   await deps.queue.work('send-whatsapp', (d: Parameters<typeof sendWhatsappJob>[1]) => sendWhatsappJob(deps, d));

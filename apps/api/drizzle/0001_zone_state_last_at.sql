@@ -1,0 +1,1 @@
+ALTER TABLE "zone_states" ADD COLUMN "last_at" timestamp with time zone;

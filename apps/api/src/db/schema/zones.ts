@@ -9,6 +9,7 @@ import {
   primaryKey,
   smallint,
   text,
+  timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
 
@@ -50,6 +51,7 @@ export const zoneStates = pgTable(
     state: zoneStateValue().notNull().default('unknown'),
     pendingState: zoneStateValue(),
     pendingCount: smallint().notNull().default(0),
+    lastAt: timestamp({ withTimezone: true }),
   },
   (t) => [primaryKey({ columns: [t.zoneId, t.deviceId] })],
 );

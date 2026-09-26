@@ -91,7 +91,15 @@
     "title": "Recorridos"
   },
   "zones": {
-    "title": "Zonas seguras"
+    "title": "Zonas seguras",
+    "name": "Nombre de la zona",
+    "namePlaceholder": "Casa, parque…",
+    "radius": "Radio",
+    "meters": "{{m}} m",
+    "save": "Guardar zona",
+    "tapToCreate": "Toca el mapa donde quieras crear una zona segura.",
+    "empty": "Aún no hay zonas seguras.",
+    "active": "Zona activa"
   },
   "tag": {
     "title": "Placa NFC/QR",
@@ -124,7 +132,19 @@
   },
   "settings": {
     "title": "Ajustes",
-    "short": "Ajustes"
+    "short": "Ajustes",
+    "name": "Tu nombre",
+    "saved": "Cambios guardados.",
+    "whatsappAlerts": "Alertas de salida por WhatsApp",
+    "whatsappHelp": "Siempre recibes las alertas como notificación de la app. Por WhatsApp solo si lo activas.",
+    "privacy": "Tus datos",
+    "export": "Descargar mis datos",
+    "exportTitle": "Mis datos de Ganador",
+    "logout": "Cerrar sesión",
+    "delete": "Eliminar mi cuenta",
+    "deleteTitle": "¿Eliminar tu cuenta?",
+    "deleteBody": "Borraremos tus datos personales y los de tus mascotas en un máximo de 24 horas. Tus placas dejarán de mostrar información. No se puede deshacer.",
+    "deleteConfirm": "Eliminar cuenta"
   },
   "public": {
     "foundDog": "¡Encontraste a este perrito!",

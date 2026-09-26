@@ -7,6 +7,7 @@ import { meRoutes } from './me';
 import { petRoutes } from './pets';
 import { publicRoutes } from './public';
 import { tagRoutes } from './tags';
+import { zoneRoutes } from './zones';
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(
@@ -16,6 +17,7 @@ export async function registerRoutes(app: FastifyInstance) {
       await petRoutes(v1);
       await deviceRoutes(v1);
       await tagRoutes(v1);
+      await zoneRoutes(v1);
     },
     { prefix: '/v1' },
   );
