@@ -40,20 +40,23 @@ confirmar que la ubicación, la hora y la batería aparecen en el mapa.
 6. **Given** un rastreador que no ha reportado en más de su umbral de señal (su intervalo de
    reporte en reposo más la tolerancia), **When** el dueño consulta la ubicación, **Then** la
    app indica "sin señal", que la ubicación no está actualizada y desde cuándo.
+7. **Given** un dueño con cuenta, **When** elige "Descargar mis datos", **Then** recibe un archivo
+   legible con su cuenta, consentimientos, mascotas, zonas, dispositivos, accesos y las
+   posiciones de los últimos 7 días (FR-003a).
 
 ---
 
 ### User Story 2 - Recuperación con la placa NFC/QR (Priority: P1)
 
 Quien encuentra a una mascota extraviada acerca su celular a la placa o escanea el código QR,
-ve una página con los datos que el dueño decidió mostrar y lo contacta con un solo toque. El
-dueño recibe una notificación de cada consulta.
+ve una página con los datos que el dueño decidió mostrar y lo contacta por WhatsApp con un solo
+toque. El dueño recibe una notificación de cada consulta.
 
 **Why this priority**: función crítica; funciona incluso sin rastreador o si el rastreador se
 quedó sin batería.
 
 **Independent Test**: vincular una placa a una mascota, escanearla desde un celular sin la app y
-sin sesión, y confirmar que se muestran los datos autorizados y que llamar o enviar WhatsApp
+sin sesión, y confirmar que se muestran los datos autorizados y que el botón de WhatsApp
 funciona; confirmar que el dueño recibe la notificación.
 
 **Acceptance Scenarios**:
@@ -64,13 +67,17 @@ funciona; confirmar que el dueño recibe la notificación.
    se abre en el navegador una página pública sin inicio de sesión ni instalación.
 3. **Given** la página pública abierta, **Then** muestra la foto y el nombre de la mascota y solo
    los datos del dueño y de salud que el dueño autorizó; nunca la dirección del domicilio.
-4. **Given** la página pública abierta, **When** la persona toca "Llamar" o "WhatsApp", **Then**
-   se inicia la llamada o se abre una conversación de WhatsApp con el dueño y un mensaje
-   prellenado que menciona a la mascota.
-5. **Given** que alguien abre la página pública, **Then** el dueño recibe una notificación con
-   la hora de la consulta, y la página no solicita ni registra la ubicación de quien la abre.
+4. **Given** la página pública abierta, **When** la persona toca "Enviar WhatsApp", **Then** se
+   abre una conversación de WhatsApp con el dueño y un mensaje prellenado que menciona a la
+   mascota; la página no ofrece llamada ni muestra el número como texto.
+5. **Given** que alguien abre la página pública, **Then** el dueño (no los familiares) recibe
+   una notificación con la hora de la consulta, y la página no solicita ni registra la
+   ubicación de quien la abre.
 6. **Given** una placa sin vincular o desvinculada, **When** alguien la escanea, **Then** ve un
    mensaje de que la placa no está activa, sin datos personales.
+7. **Given** un dueño que activa una placa, **Then** la app le informa que su número se usará en
+   el botón de WhatsApp de la página pública y, si su código de acceso le llegó por SMS, le pide
+   confirmar que ese número tiene WhatsApp.
 
 ---
 
@@ -100,6 +107,9 @@ batería baja; confirmar que llegan las notificaciones correctas, sin duplicados
 6. **Given** un rastreador que deja de reportar por más de su umbral de señal, **Then** el
    dueño recibe un aviso de pérdida de señal; un rastreador en reposo que sigue reportando no
    genera ese aviso.
+7. **Given** un dueño que no ha aceptado las alertas por WhatsApp, **When** la mascota sale de una
+   zona, **Then** recibe solo la notificación de la app; **When** las acepta desde ajustes,
+   **Then** las siguientes salidas también le llegan por WhatsApp.
 
 ---
 
@@ -159,9 +169,10 @@ alertas; revocar el acceso y confirmar que deja de verla.
   para no saturarlo, sin perder el registro de cada consulta.
 - El dueño no tiene WhatsApp o no activó ese canal: recibe la alerta de salida solo como
   notificación de la app.
-- Quien encuentra a la mascota no tiene WhatsApp: el botón de llamada sigue disponible.
-- El dueño oculta todos sus medios de contacto: la app le impide guardar esa configuración,
-  porque la página pública debe mostrar al menos un medio de contacto.
+- Quien encuentra a la mascota no tiene WhatsApp instalado: el enlace abre WhatsApp Web o la
+  descarga de WhatsApp; en el MVP no se ofrece llamada.
+- El dueño no puede ocultar el botón de WhatsApp: es el único medio de contacto de la página
+  pública. Al activar una placa, la app le informa que su número se usa en ese botón.
 - El dueño elimina su cuenta: se eliminan sus datos personales y sus placas quedan inactivas.
 
 ## Requirements *(mandatory)*
@@ -196,13 +207,11 @@ alertas; revocar el acceso y confirmar que deja de verla.
 
 - **FR-008**: La app DEBE mostrar en un mapa la última ubicación conocida de cada mascota con su
   hora y el nivel de batería del rastreador.
-- **FR-009**: La app DEBE indicar que la ubicación no está actualizada cuando el rastreador
-  lleve más de su umbral de señal sin reportar.
+- **FR-009**: La app DEBE mostrar el estado del rastreador y desde cuándo: "en movimiento", "en
+  reposo" (reporta dentro de su umbral de señal sin desplazarse) o "sin señal" (superó su
+  umbral); en "sin señal" DEBE indicar que la ubicación no está actualizada.
 - **FR-009a**: El umbral de señal DEBE calcularse por dispositivo como su intervalo de reporte
   en reposo más una tolerancia (el mayor entre 5 minutos y la mitad de ese intervalo).
-- **FR-009b**: La app DEBE distinguir entre "en movimiento", "en reposo" (el rastreador reporta
-  dentro de su umbral pero la mascota no se desplaza) y "sin señal" (superó su umbral), e
-  indicar desde cuándo está en cada estado.
 - **FR-010**: Los dueños DEBEN poder consultar el recorrido de cualquiera de los últimos 7 días.
 - **FR-011**: El sistema DEBE eliminar las posiciones con más de 7 días.
 
@@ -221,8 +230,7 @@ alertas; revocar el acceso y confirmar que deja de verla.
   volver a avisar hasta que se recargue por encima de ese nivel.
 - **FR-016**: El sistema DEBE avisar una vez por episodio cuando un rastreador supere su umbral
   de señal (FR-009a) sin reportar; no DEBE avisar mientras la mascota solo esté en reposo.
-- **FR-016a**: En el MVP el dueño no puede cambiar los umbrales: batería baja fija en 20 % y
-  umbral de señal calculado por dispositivo según FR-009a.
+- **FR-016a**: En el MVP el dueño no puede cambiar los umbrales de FR-009a y FR-015.
 
 **Compartir con la familia**
 
@@ -238,12 +246,12 @@ alertas; revocar el acceso y confirmar que deja de verla.
 - **FR-020**: Leer la placa por NFC o QR DEBE abrir la página pública en el navegador sin inicio
   de sesión ni instalación.
 - **FR-021**: La página pública DEBE mostrar la foto y el nombre de la mascota, y los datos que
-  el dueño autorizó entre: nombre del dueño, teléfono, enfermedades y medicamentos.
+  el dueño autorizó entre: nombre del dueño, enfermedades y medicamentos.
 - **FR-022**: La página pública NUNCA DEBE mostrar la dirección del domicilio.
-- **FR-023**: La página pública DEBE mostrar al menos un medio de contacto y ofrecer llamar o
-  enviar WhatsApp al dueño con un solo toque.
-- **FR-024**: El sistema DEBE notificar al dueño cada consulta a la página pública, indicando
-  la hora de la consulta.
+- **FR-023**: La página pública DEBE mostrar siempre un botón para enviar WhatsApp al dueño con un
+  solo toque; NO DEBE ofrecer llamada ni mostrar el número como texto.
+- **FR-024**: El sistema DEBE notificar solo al dueño (no a los familiares) cada consulta a la
+  página pública, indicando la hora de la consulta.
 - **FR-024a**: La página pública NO DEBE solicitar, calcular (por ejemplo, a partir de la
   dirección de red) ni guardar la ubicación ni otros datos personales de quien la abre.
 - **FR-025**: La página pública DEBE estar disponible siempre que la placa esté vinculada,
@@ -259,14 +267,14 @@ alertas; revocar el acceso y confirmar que deja de verla.
 
 | Dato | Titular | Finalidad | Quién lo ve | Conservación |
 |------|---------|-----------|-------------|--------------|
-| Número de celular del dueño | Dueño | Acceso a la cuenta; alertas por WhatsApp si las acepta; contacto en la página pública si lo autoriza | Dueño; público solo si lo autoriza | Hasta eliminar la cuenta |
+| Número de celular del dueño | Dueño | Acceso a la cuenta; alertas por WhatsApp si las acepta; botón de WhatsApp de la página pública | Dueño; público solo dentro del enlace del botón de WhatsApp de sus placas activas (no se muestra como texto) | Hasta eliminar la cuenta |
 | Nombre del dueño | Dueño | Identificarlo ante familiares y en la página pública si lo autoriza | Dueño, familiares; público solo si lo autoriza | Hasta eliminar la cuenta |
 | Ubicaciones y recorridos de la mascota | Dueño (revelan sus rutinas) | Mostrar ubicación, historial y generar alertas | Dueño y familiares con acceso activo | 7 días |
 | Zonas seguras (incluida "Casa") | Dueño | Generar alertas de salida y entrada | Dueño y familiares con acceso activo; nunca público | Hasta que el dueño las borre |
 | Foto de la mascota | Dueño | Identificar a la mascota | Dueño, familiares y público; sin metadatos de ubicación | Hasta borrarla o eliminar la cuenta |
 | Número del familiar invitado | Familiar (tercero) | Enviar y validar la invitación | Dueño | Invitación sin aceptar: 30 días |
 | Consentimientos (aviso y WhatsApp) | Dueño | Demostrar el consentimiento | Solo el sistema | Mientras exista la cuenta y el plazo legal |
-| Consultas a la placa | — (solo placa y hora; no hay datos de quien consulta) | Avisar al dueño | Dueño y familiares | 90 días |
+| Consultas a la placa | — (solo placa y hora; no hay datos de quien consulta) | Avisar al dueño | Solo el dueño | 90 días |
 
 Las enfermedades y medicamentos son de la mascota, no datos personales del dueño; se publican solo
 si el dueño lo autoriza. Quien encuentra a la mascota no entrega ningún dato (FR-024a).
@@ -327,6 +335,8 @@ si el dueño lo autoriza. Quien encuentra a la mascota no entrega ningún dato (
 - Ajuste: el umbral de señal y de ubicación desactualizada deja de ser de 30 minutos fijos y se
   calcula por dispositivo con su intervalo de reporte en reposo más una tolerancia; la app
   distingue "en reposo" de "sin señal".
+- Ajuste (2026-09-26): la página pública solo ofrece un botón de WhatsApp (sin llamada ni número
+  visible); los avisos de consultas a la placa llegan solo al dueño.
 
 ## Assumptions
 
@@ -347,6 +357,8 @@ si el dueño lo autoriza. Quien encuentra a la mascota no entrega ningún dato (
   el propio rastreador informa; no lo captura el dueño.
 - Los umbrales de FR-016a podrán volverse ajustables en una versión posterior, con base en
   datos de uso.
+- El número del dueño tiene WhatsApp; si el código de acceso le llegó por SMS, la app le pide
+  confirmar que ese número tiene WhatsApp antes de activar una placa.
 - El inglés no se habilita en el MVP, pero la interfaz queda preparada para agregarlo.
 - Fuera de alcance: pagos y suscripciones, monitoreo de salud, tienda de dispositivos.
 - Las enfermedades y medicamentos son de la mascota, no del dueño, pero solo se muestran si el

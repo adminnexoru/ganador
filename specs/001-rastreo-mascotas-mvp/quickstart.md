@@ -43,19 +43,22 @@ pnpm --filter mobile lighthouse         # presupuesto de la página pública (re
 |---|-----------|-------|--------------------|
 | 1 | Registro (HU1) | Abrir la app, ingresar celular, código del registro de la API, aceptar aviso | Cuenta creada; sin aceptar el aviso no se pueden crear mascotas |
 | 2 | Ubicación (HU1, SC-001) | Crear mascota, vincular IMEI, correr `pnpm sim --imei <IMEI> --route casa` | El mapa muestra ubicación, hora y batería en < 10 s al abrir la app |
-| 3 | Reposo vs. sin señal (FR-009a, FR-009b, FR-016) | Con perfil de 10 min en reposo: simular posiciones quietas cada 10 min; luego detener el simulador más de 15 min (o adelantar el reloj de pruebas) | Primero "en reposo" sin alertas; al pasar el umbral (10 + 5 min), "sin señal", ubicación marcada como no actualizada y una sola alerta de pérdida de señal |
+| 3 | Reposo vs. sin señal (FR-009, FR-009a, FR-016) | Con perfil de 10 min en reposo: simular posiciones quietas cada 10 min; luego detener el simulador más de 15 min (o adelantar el reloj de pruebas) | Primero "en reposo" sin alertas; al pasar el umbral (10 + 5 min), "sin señal", ubicación marcada como no actualizada y una sola alerta de pérdida de señal |
 | 4 | Salida de zona (HU3, SC-002) | Crear zona "Casa" de 100 m; simular ruta que sale de la zona | Push y WhatsApp de salida en < 2 min; una sola alerta |
 | 5 | Borde de zona (FR-014) | Simular posiciones que oscilan ±20 m en el borde | Ninguna alerta repetida |
 | 6 | Batería baja (FR-015) | Simular batería 25 → 19 → 18 → 30 → 19 % | Dos alertas: al llegar a 19 % y otra vez tras recargar |
-| 7 | Página pública (HU2, SC-003) | Vincular placa, abrir `/p/<codigo>` en Simple Browser y en el celular sin sesión | Foto, nombre y datos autorizados; nunca dirección; "Llamar" y "WhatsApp" funcionan |
+| 7 | Página pública (HU2, SC-003) | Vincular placa, abrir `/p/<codigo>` en Simple Browser y en el celular sin sesión | Foto, nombre y datos autorizados; nunca dirección; solo el botón "Enviar WhatsApp", que abre la conversación con mensaje prellenado; sin llamada ni número visible |
 | 8 | Privacidad de quien escanea (FR-024a) | Abrir la página pública e inspeccionar la red y los registros; luego enviar más de 60 peticiones en un minuto desde el mismo origen a códigos distintos | No se pide ubicación; no se guarda IP; el dueño recibe push solo con la hora; el exceso recibe `429` y la IP no aparece en base de datos ni registros |
-| 9 | Configuración pública (FR-023) | Intentar ocultar teléfono y WhatsApp | La app lo impide con un mensaje |
+| 9 | Configuración pública (FR-021, FR-023) | Ocultar nombre del dueño y datos de salud; activar una placa con una cuenta que recibió el código por SMS | La página refleja los cambios y el botón de WhatsApp siempre aparece; la app avisa del uso del número y pide confirmar que tiene WhatsApp |
 | 10 | Placa inactiva (FR-026) | Abrir `/p/<codigo-sin-vincular>` | "Placa no activa", sin datos personales |
 | 11 | Familia (HU5) | Invitar un segundo número, aceptar; intentar editar una zona como familiar; revocar | El familiar ve ubicación y alertas; recibe `403` al editar; al revocar deja de ver la mascota |
 | 12 | Historial (HU4) | Consultar el día de ayer y uno de hace 8 días | Recorrido de ayer visible; el de hace 8 días no disponible |
 | 13 | Eliminación de cuenta | Eliminar la cuenta y escanear su placa | Datos borrados; placa muestra "no activa" |
 | 14 | Español | Revisar todas las pantallas | Todo en es-MX; el lint no reporta textos literales |
 | 15 | Flujo completo con un celular como rastreador | Ver "Celular como rastreador con Traccar Client" abajo | Ubicación, zonas, reposo, sin señal y batería funcionan de punta a punta sin hardware dedicado |
+| 16 | Derecho de acceso (FR-003a) | En ajustes, "Descargar mis datos" | Archivo con cuenta, consentimientos, mascotas, zonas, dispositivos, accesos y posiciones de 7 días; nada de otros usuarios |
+| 17 | Aceptación de WhatsApp (FR-013a) | Con WhatsApp sin aceptar, simular una salida; aceptarlo en ajustes y repetir | Primero solo push; después push y WhatsApp |
+| 18 | Fotos sin metadatos (H1) | Subir una foto con ubicación GPS en EXIF y descargar la versión pública | La imagen no contiene metadatos |
 
 ## Celular como rastreador con Traccar Client
 

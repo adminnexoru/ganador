@@ -22,7 +22,7 @@ Solo los adaptadores conocen formatos de Traccar o de un fabricante.
 | status | enum | `unlinked`, `linked`, `retired` |
 | restIntervalS | integer | intervalo de reporte en reposo en segundos (60–86,400); lo fija el adaptador desde el perfil o desde lo que informa el rastreador; el dueño no lo edita |
 | lastSeenAt | timestamptz, nulo | última actividad: posición o latido sin posición |
-| activity | enum | `moving`, `resting`, `no_signal` (FR-009b) |
+| activity | enum | `moving`, `resting`, `no_signal` (FR-009) |
 | activitySince | timestamptz, nulo | inicio del estado de actividad actual |
 | createdAt | timestamptz | |
 
@@ -76,7 +76,8 @@ su posición (7 días); `tag_viewed` a los 90 días.
 | charging | boolean, nulo | |
 
 **Estado derivado** en `Device`: `batteryAlertArmed` (boolean). Se desarma al enviar la alerta
-de ≤ 20 % y se rearma al superar 25 % (FR-015).
+de ≤ 20 % y se rearma al superar 25 % (FR-015). `signalAlertArmed` (boolean): se desarma al
+emitir `signal_lost` y se rearma con el siguiente reporte (FR-016).
 
 ## Cuentas, mascotas y acceso
 
@@ -89,6 +90,7 @@ de ≤ 20 % y se rearma al superar 25 % (FR-015).
 | displayName | text | 1–60 caracteres |
 | whatsappAlertsEnabled | boolean | por defecto `false`; solo se activa con aceptación expresa (FR-013a) |
 | whatsappOptInAt | timestamptz, nulo | fecha de la aceptación; se limpia al desactivarlas |
+| whatsappConfirmed | boolean | `true` si el código de acceso llegó por WhatsApp o si el dueño confirma que su número tiene WhatsApp; requerido para activar una placa (FR-023) |
 | locale | text | `es-MX` por defecto |
 | deletedAt | timestamptz, nulo | al eliminar la cuenta se borran datos personales en ≤ 24 h |
 
@@ -172,13 +174,11 @@ está `active` muestra "placa no activa" (FR-026).
 |-------|------|-------------|
 | petId | uuid | |
 | showOwnerName | boolean | `true` |
-| showPhone | boolean | `true` |
-| showWhatsapp | boolean | `true` |
 | showConditions | boolean | `false` |
 | showMedications | boolean | `false` |
 
-**Regla**: al menos uno de `showPhone` o `showWhatsapp` debe ser `true` (FR-023). Foto y nombre
-de la mascota siempre se muestran (FR-021).
+**Regla**: foto y nombre de la mascota y el botón de WhatsApp del dueño siempre se muestran
+(FR-021, FR-023); el número no se muestra como texto y no hay opción de llamada.
 
 ### TagView (Consulta de placa)
 
@@ -213,8 +213,9 @@ Notificaciones agrupadas: como máximo una cada 5 minutos por placa, con el cont
 | status | enum | `pending`, `sent`, `failed` |
 | sentAt | timestamptz, nulo | |
 
-**Reglas**: todo evento notifica por `push` a cada destinatario; `zone_exit` además por
-`whatsapp` a quienes lo tengan activado. Una falla de WhatsApp no afecta al envío push
+**Reglas**: todo evento notifica por `push` al dueño y a los familiares con acceso activo, salvo
+`tag_viewed`, que solo se notifica al dueño (FR-024); `zone_exit` además por `whatsapp` a
+quienes lo tengan activado. Una falla de WhatsApp no afecta al envío push
 (FR-013a).
 
 ## Autenticación

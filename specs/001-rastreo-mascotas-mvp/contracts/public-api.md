@@ -7,7 +7,7 @@ Consumido por la ruta web `/p/[codigo]` sin inicio de sesión (FR-020). Base: `h
 Sin autenticación. Respuesta con `Cache-Control: no-store` (el dueño puede cambiar sus datos
 en cualquier momento). El servidor **no** registra IP ni agente de usuario para esta ruta y no
 pide ni recibe ubicación (FR-024a). Cada respuesta 200 registra un `TagView` y dispara el
-evento `tag_viewed`.
+evento `tag_viewed`, que se notifica solo al dueño (FR-024).
 
 Límites (respuesta `429` con `Retry-After`):
 
@@ -29,8 +29,7 @@ Límites (respuesta `429` con `Retry-After`):
   },
   "owner": {
     "name": "Ana",
-    "phone": "+525512345678",
-    "whatsapp": "+525512345678"
+    "whatsappUrl": "https://wa.me/525512345678?text=Hola%2C%20encontr%C3%A9%20a%20Firulais"
   },
   "health": {
     "conditions": "Epilepsia",
@@ -42,9 +41,11 @@ Límites (respuesta `429` con `Retry-After`):
 Reglas:
 
 - `pet.name` y `pet.photoUrl` siempre presentes (`photoUrl` puede ser `null` si no hay foto).
-- `owner.name`, `owner.phone`, `owner.whatsapp`, `health.conditions`, `health.medications`
-  aparecen solo si el dueño los autorizó; si no, se **omiten** (no se envían como `null`).
-- Al menos uno de `owner.phone` u `owner.whatsapp` siempre está presente (FR-023).
+- `owner.whatsappUrl` siempre está presente: enlace `wa.me` con el número del dueño y un mensaje
+  prellenado en es-MX que menciona a la mascota (FR-023). No se envía el número como campo
+  aparte ni hay opción de llamada.
+- `owner.name`, `health.conditions`, `health.medications` aparecen solo si el dueño los
+  autorizó; si no, se **omiten** (no se envían como `null`).
 - La respuesta nunca incluye dirección, zonas, ubicación del rastreador ni identificadores
   internos (FR-022).
 
@@ -63,7 +64,6 @@ Código inexistente. Mismo cuerpo visual que "placa no activa" en la web.
 ## Ruta web `/p/[codigo]`
 
 - Muestra foto, nombre y los datos autorizados.
-- Botón "Llamar": `tel:+52...`.
-- Botón "WhatsApp": `https://wa.me/52...?text=<mensaje prellenado en es-MX con el nombre de la
-  mascota>`.
+- Un solo botón "Enviar WhatsApp" que abre `owner.whatsappUrl`; sin botón de llamada ni número
+  visible como texto.
 - Presupuesto de rendimiento: ver research R3.

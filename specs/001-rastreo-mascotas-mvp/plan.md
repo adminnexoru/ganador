@@ -99,8 +99,10 @@ apps/
 │   │   ├── api/                 # cliente tipado de contracts/app-api.md
 │   │   ├── i18n/                # es-MX (base), en (preparado)
 │   │   └── notifications/
+│   ├── scripts/                 # check-i18n
 │   └── tests/
 └── api/                         # Fastify
+    ├── scripts/                 # check-adapter-boundary (principio I)
     ├── src/
     │   ├── adapters/traccar/    # DeviceAdapter, perfiles por marca (incl. traccar-client), sondeo de actividad
     │   ├── routes/              # auth, pets, zones, tags, public, ingest
@@ -122,7 +124,9 @@ infra/
 ├── docker-compose.yml           # PostgreSQL/PostGIS, Traccar, API, Caddy
 └── traccar/traccar.xml          # reenvío a /ingest/traccar/*; puerto 5055 para Traccar Client
 tools/
-└── simulator/                   # envía posiciones de prueba a Traccar
+├── simulator/                   # envía posiciones de prueba a Traccar
+├── tags/                        # genera lotes de placas (CSV para NFC y QR)
+└── loadtest/                    # prueba de carga de ingesta (k6)
 ```
 
 **Structure Decision**: monorepo con pnpm workspaces. `apps/mobile` es el único cliente

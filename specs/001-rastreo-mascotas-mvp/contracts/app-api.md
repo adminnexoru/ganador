@@ -17,7 +17,7 @@ Un familiar que llama a un endpoint **O** recibe `403 forbidden` (FR-018).
 | `POST /auth/logout` | — | `204` |
 | `GET /privacy-notice` | — | `{ version, url }` |
 | `POST /me/consent` | `{ noticeVersion }` | `204` |
-| `GET /me` / `PATCH /me` | `{ displayName?, whatsappAlertsEnabled? }` | usuario; activar WhatsApp registra `whatsappOptInAt` y desactivarlo lo limpia |
+| `GET /me` / `PATCH /me` | `{ displayName?, whatsappAlertsEnabled?, whatsappConfirmed? }` | usuario; activar WhatsApp registra `whatsappOptInAt` y desactivarlo lo limpia |
 | `DELETE /me` | — | `202`; revoca consentimiento, borra datos en ≤ 24 h, desactiva placas |
 | `POST /me/push-tokens` | `{ token, platform }` | `204` |
 | `GET /me/export` | — | JSON con cuenta, consentimientos, mascotas, zonas, dispositivos, accesos y posiciones vigentes (últimos 7 días); derecho de acceso (FR-003a) |
@@ -58,7 +58,7 @@ Mientras `needsConsent` sea verdadero, todo endpoint fuera de `/auth/*`, `/priva
 ```
 
 `activity` es `moving`, `resting` o `no_signal`, con `activitySince` como inicio del estado
-(FR-009b). `stale` es verdadero solo cuando `activity` es `no_signal`, es decir, cuando el
+(FR-009). `stale` es verdadero solo cuando `activity` es `no_signal`, es decir, cuando el
 dispositivo superó su umbral de señal (intervalo en reposo + tolerancia, FR-009a); una
 mascota en reposo no se marca como desactualizada aunque su última posición sea antigua.
 
@@ -85,13 +85,24 @@ mascota en reposo no se marca como desactualizada aunque su última posición se
 
 | Método y ruta | Permiso | Notas |
 |---------------|---------|-------|
-| `POST /pets/{id}/tags` | O | `{ code }`; `404` si no existe, `409` si ya está activa en otra mascota |
+| `POST /pets/{id}/tags` | O | `{ code }`; `404` si no existe, `409` si ya está activa en otra mascota, `409 whatsapp_not_confirmed` si el dueño no tiene `whatsappConfirmed` |
 | `DELETE /tags/{tagId}` | O | la deshabilita |
 | `GET /pets/{id}/public-profile` | O | configuración actual |
-| `PUT /pets/{id}/public-profile` | O | `{ showOwnerName, showPhone, showWhatsapp, showConditions, showMedications }`; `422` si `showPhone` y `showWhatsapp` son ambos falsos |
+| `PUT /pets/{id}/public-profile` | O | `{ showOwnerName, showConditions, showMedications }`; el botón de WhatsApp no es configurable (FR-023) |
 
 ## Notificaciones push (contenido)
 
 Cada push lleva `data: { type, petId, eventId }`, con `type` en `zone_exit`, `zone_enter`,
-`battery_low`, `signal_lost`, `tag_viewed`. Los textos se generan en el idioma del
+`battery_low`, `signal_lost`, `tag_viewed` (este último solo al dueño). Los textos se generan en el idioma del
 destinatario.
+
+## Medición de tiempos (SC-001, SC-003)
+
+| Método y ruta | Autenticación | Cuerpo |
+|---------------|---------------|--------|
+| `POST /telemetry/timings` | No | `{ metric: "owner_map_visible" \| "public_contact_visible", ms, platform: "ios" \| "android" \| "web" }` |
+
+No lleva identificadores de usuario, mascota, placa ni dispositivo; el servidor no registra IP ni
+agente de usuario en esta ruta y solo guarda conteos diarios por rango de tiempo (histograma),
+para calcular el percentil 95. Límite de 60 peticiones por minuto por origen con el mismo
+mecanismo en memoria de la página pública.

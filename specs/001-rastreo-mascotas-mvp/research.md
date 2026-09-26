@@ -40,8 +40,8 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   - Foto de la mascota servida en tamaño reducido (≤ 60 KB, WebP/JPEG) desde la API.
   - Datos de contacto visibles en ≤ 5 s en Lighthouse con perfil "Slow 4G" en un Android de
     gama media emulado.
-  - Botones "Llamar" (`tel:`) y "WhatsApp" (`https://wa.me/<número>?text=...`) como enlaces
-    simples, sin JavaScript adicional.
+  - Un solo botón "Enviar WhatsApp" (`https://wa.me/<número>?text=...`) como enlace simple, sin
+    JavaScript adicional; sin llamada ni número visible (FR-023).
 - **Rationale**: mantiene la página dentro del mismo proyecto (principio VIII) y permite medir
   el presupuesto en CI.
 - **Alternatives considered**: renderizado en servidor con Expo Router (`output: "server"`),
@@ -144,7 +144,7 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   - Batería baja: una alerta al cruzar ≤ 20 %; se rearma al superar 25 % (FR-015).
   - **Umbral de señal por dispositivo** (FR-009a): `umbral = intervaloReposo +
     max(5 min, intervaloReposo / 2)`. Ejemplos: 60 s → 6 min; 10 min → 15 min; 30 min → 45 min.
-  - **Estado de actividad** (FR-009b), calculado en `packages/domain`:
+  - **Estado de actividad** (FR-009), calculado en `packages/domain`:
     - `no_signal` si `ahora − lastSeenAt > umbral`;
     - `moving` si la última posición válida tiene velocidad > 1 km/h o se desplazó más de
       `max(30 m, precisión)` respecto de la anterior;
@@ -192,8 +192,9 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   (política de Meta y principio III); se guarda la fecha de aceptación. El código de acceso no
   la requiere porque lo solicita el propio usuario.
 - **Costo** (referencia; Meta cobra por mensaje de plantilla entregado según país):
-  - Alerta de salida: supuesto de 10 salidas/mes × 1.5 destinatarios × ≈ US$0.01
-    = **≈ US$0.15 / dispositivo / mes**. Es el costo variable más grande; si crece, se puede
+  - Alerta de salida: supuesto de 10 salidas/mes × 1.5 destinatarios × 60 % que aceptan
+    WhatsApp × ≈ US$0.01 = **≈ US$0.09 / dispositivo / mes** (techo con 100 % de aceptación:
+    US$0.15). Es el costo variable más grande; si crece, se puede
     limitar a una alerta de WhatsApp por episodio de escape.
   - Códigos de acceso: ≈ 1.5 códigos/mes por mascota × ≈ US$0.015 = **≈ US$0.02**; con 10 %
     de respaldo por SMS a ≈ US$0.08 → **+ ≈ US$0.01**. Las sesiones duran 90 días para
@@ -250,6 +251,17 @@ contratar** y actualizarse aquí con la fecha de consulta real.
     eliminar cuenta, oponerse) y por correo para lo demás (FR-003a).
   - La dirección del domicilio no existe en el modelo de datos.
 
+## R17. Medición de tiempos en producción (SC-001, SC-003)
+
+- **Decision**: la app envía el tiempo desde que se abre hasta que el mapa muestra la ubicación
+  (`owner_map_visible`) y la página pública el tiempo hasta que el botón de WhatsApp es visible
+  (`public_contact_visible`) a `POST /telemetry/timings`. Solo métrica, milisegundos y
+  plataforma; se guardan conteos diarios por rango para calcular el percentil 95.
+- **Rationale**: SC-001 y SC-003 hablan del 95 % de los casos reales; Lighthouse y la prueba de
+  carga solo cubren el laboratorio. Sin identificadores ni IP, respeta FR-024a y el principio III.
+- **Alternatives considered**: servicios de analítica de terceros (envían datos del visitante a
+  otra empresa y agregan costo).
+
 ---
 
 ## Costo mensual por dispositivo activo (resumen)
@@ -263,9 +275,10 @@ Escala de referencia: 5,000 rastreadores activos. Precios de referencia por veri
 | Notificaciones push (Expo) | US$0.000 |
 | Mapas móviles | US$0.000 |
 | Fotos | < US$0.001 |
-| WhatsApp: alertas de salida de zona | ≈ US$0.150 |
+| WhatsApp: alertas de salida de zona (60 % de aceptación) | ≈ US$0.090 |
 | WhatsApp/SMS: códigos de acceso | ≈ US$0.030 |
-| **Total** | **≈ US$0.19** |
+| Medición de tiempos | US$0.000 (mismo servidor) |
+| **Total** | **≈ US$0.13** (techo ≈ US$0.19) |
 
 **Costos fijos fuera de la tabla**: cuenta de Apple Developer (US$99/año), Google Play
 (US$25 una vez), dominio (≈ US$15/año), EAS Build en plan gratuito.
