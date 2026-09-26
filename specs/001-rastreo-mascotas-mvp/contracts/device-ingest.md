@@ -52,7 +52,7 @@ un perfil y sus pruebas.
 
 ## Traccar → backend
 
-Puertos de entrada: OsmAnd solo por HTTPS en `https://track.<dominio>` (Caddy → `traccar:5055`);
+Puertos de entrada: OsmAnd solo por HTTPS en `https://track.ganador.nexoru.ai` (Caddy → `traccar:5055`);
 GT06 en el puerto 5023 sin cifrado, aceptado bajo la regla "Transporte desde el hardware" de la
 constitución v1.1.0.
 

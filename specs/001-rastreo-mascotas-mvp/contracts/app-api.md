@@ -1,6 +1,6 @@
 # Contrato: API de la app del dueño
 
-Base: `https://api.<dominio>/v1`. JSON. Autenticación con `Authorization: Bearer <accessToken>`
+Base: `https://api.ganador.nexoru.ai/v1`. JSON. Autenticación con `Authorization: Bearer <accessToken>`
 salvo en `/auth/*`. Errores con cuerpo `{ "error": { "code": "...", "message": "..." } }`,
 donde `message` viene en el idioma del usuario (es-MX por defecto).
 

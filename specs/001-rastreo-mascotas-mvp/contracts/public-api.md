@@ -1,6 +1,6 @@
 # Contrato: página pública de la placa
 
-Consumido por la ruta web `/p/[codigo]` sin inicio de sesión (FR-020). Base: `https://api.<dominio>`.
+Consumido por la ruta web `/p/[codigo]` sin inicio de sesión (FR-020). Base: `https://api.ganador.nexoru.ai`.
 
 ## GET /public/tags/{code}
 

@@ -70,7 +70,7 @@ dispositivo o en la web) en la misma red que la máquina de desarrollo.
 3. En la app Traccar Client:
    - Anotar el **identificador del dispositivo** que muestra.
    - **URL del servidor**: `http://<IP-de-la-máquina-en-la-LAN>:5055` (solo en desarrollo; en
-     producción es `https://track.<dominio>`, porque OsmAnd siempre va cifrado).
+     producción es `https://track.ganador.nexoru.ai`, porque OsmAnd siempre va cifrado).
    - **Precisión**: alta. **Frecuencia**: 60 s.
    - Activar el servicio y conceder permiso de ubicación "siempre".
 4. En la app del dueño: crear una mascota y vincular el dispositivo usando ese identificador

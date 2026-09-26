@@ -53,9 +53,15 @@ contratar** y actualizarse aquí con la fecha de consulta real.
 
 ## R4. NFC y QR sin app
 
-- **Decision**: cada placa lleva grabada una URL `https://<dominio>/p/<codigo>` en un registro
+- **Decision**: cada placa lleva grabada una URL `https://ganador.nexoru.ai/p/<codigo>` en un registro
   NDEF (NFC) y en el QR. El `codigo` es aleatorio, de 10 caracteres base32 sin caracteres
   ambiguos (≈ 50 bits), impreso también en la placa.
+- **Dominios** (temporales, definidos el 2026-09-26): web y página pública en
+  `ganador.nexoru.ai`, API en `api.ganador.nexoru.ai`, ingesta cifrada de rastreadores en
+  `track.ganador.nexoru.ai`. **La URL grabada en NFC y QR no se puede cambiar**: aunque el
+  producto se mude a un dominio definitivo, `ganador.nexoru.ai/p/*` debe seguir respondiendo
+  (redirección 301 al dominio nuevo) mientras existan placas con esa URL. Conviene producir
+  pocas placas con el dominio temporal.
 - **Rationale**: Android y iPhone (XS o posterior) abren URLs NDEF de forma nativa y la cámara
   lee QR sin apps, cumpliendo FR-020. Un código aleatorio largo impide adivinar placas ajenas.
 - **Vinculación desde la app**: el dueño escanea el QR con la cámara de la app (`expo-camera`,
@@ -85,7 +91,7 @@ contratar** y actualizarse aquí con la fecha de consulta real.
   para que esa lógica sea nuestra y se pruebe antes de programarse (principio VII).
 - **Cifrado en tránsito** (constitución v1.1.0, "Transporte desde el hardware"):
   - OsmAnd (Traccar Client y rastreadores compatibles) solo por HTTPS: Caddy recibe
-    `https://track.<dominio>` y lo pasa a `traccar:5055`, que no se publica a internet.
+    `https://track.ganador.nexoru.ai` y lo pasa a `traccar:5055`, que no se publica a internet.
   - Protocolos sin cifrado aceptados en el MVP: **GT06** (puerto 5023), porque la mayoría de los
     rastreadores económicos disponibles en México solo lo soportan. El rastreador envía solo
     IMEI, posición, batería y estado; el dueño solo existe en el servidor.

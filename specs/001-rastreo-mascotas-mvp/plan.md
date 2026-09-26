@@ -142,4 +142,6 @@ Sin violaciones de la constitución que justificar.
   tramitar al inicio, porque bloquean FR-001 y FR-013a en producción.
 - **Frecuencia de reporte del rastreador**: SC-002 depende de reportes ≤ 60 s; validar con el
   primer modelo de hardware.
+- **Dominio temporal**: `ganador.nexoru.ai` queda grabado en las placas; si cambia el dominio,
+  el temporal debe mantenerse con redirección mientras existan placas (research R4).
 - **Precios**: todos los costos son de referencia y deben verificarse con los proveedores.
