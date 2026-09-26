@@ -43,6 +43,70 @@
   },
   "pets": {
     "title": "Mis mascotas",
-    "empty": "Aún no tienes mascotas registradas."
+    "empty": "Aún no tienes mascotas registradas.",
+    "add": "Agregar mascota",
+    "create": "Guardar mascota",
+    "edit": "Editar datos",
+    "delete": "Eliminar mascota",
+    "deleteTitle": "¿Eliminar a {{name}}?",
+    "deleteBody": "Se desvincularán su rastreador y sus placas. Esta acción no se puede deshacer.",
+    "photo": "Foto de la mascota",
+    "addPhoto": "Agregar foto",
+    "name": "Nombre",
+    "species": "Especie",
+    "dog": "Perro",
+    "cat": "Gato",
+    "breed": "Raza (opcional)",
+    "size": "Tamaño (opcional)",
+    "small": "Chico",
+    "medium": "Mediano",
+    "large": "Grande",
+    "conditions": "Enfermedades (opcional)",
+    "medications": "Medicamentos (opcional)",
+    "noDevice": "Sin rastreador vinculado",
+    "shared": "Compartida contigo"
+  },
+  "device": {
+    "title": "Rastreador",
+    "help": "Escribe el IMEI que viene en la caja o etiqueta del rastreador. Si usas la app Traccar Client, escribe el identificador que muestra.",
+    "idLabel": "IMEI o identificador",
+    "idPlaceholder": "864895030000001",
+    "link": "Vincular rastreador",
+    "later": "Hacerlo después",
+    "linked": "Rastreador vinculado: {{id}}",
+    "unlink": "Desvincular rastreador"
+  },
+  "location": {
+    "moving": "En movimiento",
+    "resting": "En reposo",
+    "restingSince": "En reposo desde las {{time}}",
+    "noSignal": "Sin señal",
+    "noSignalSince": "Sin señal desde las {{time}}",
+    "stale": "La ubicación no está actualizada. Último reporte: {{time}}",
+    "waiting": "Esperando el primer reporte del rastreador",
+    "updated": "Actualizada: {{time}}",
+    "battery": "Batería {{level}}"
+  },
+  "history": {
+    "title": "Recorridos"
+  },
+  "zones": {
+    "title": "Zonas seguras"
+  },
+  "tag": {
+    "title": "Placa NFC/QR"
+  },
+  "publicProfile": {
+    "title": "Página pública"
+  },
+  "family": {
+    "title": "Familia"
+  },
+  "invitations": {
+    "title": "Invitaciones"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "short": "Ajustes"
   }
 }

@@ -1,3 +1,5 @@
+import type { FastifyBaseLogger } from 'fastify';
+
 import type { TraccarApi } from './adapters/traccar/api-client';
 import type { Config } from './config';
 import type { Db } from './db/client';
@@ -16,6 +18,7 @@ export type Deps = {
   storage: Storage;
   traccar: TraccarApi;
   now: () => Date;
+  log?: FastifyBaseLogger;
 };
 
 declare module 'fastify' {

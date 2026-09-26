@@ -47,6 +47,7 @@ export async function buildApp({
     traccar:
       overrides.traccar ?? new TraccarApiClient(config.TRACCAR_URL, config.TRACCAR_USER, config.TRACCAR_PASSWORD),
     now: overrides.now ?? (() => new Date()),
+    log: app.log,
   };
   app.decorate('deps', deps);
 

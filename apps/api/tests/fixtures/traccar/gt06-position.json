@@ -1,0 +1,26 @@
+{
+  "position": {
+    "id": 202,
+    "deviceId": 9,
+    "protocol": "gt06",
+    "serverTime": "2026-09-26T18:05:01.000+00:00",
+    "deviceTime": "2026-09-26T18:05:00.000+00:00",
+    "fixTime": "2026-09-26T18:05:00.000+00:00",
+    "outdated": false,
+    "valid": true,
+    "latitude": 19.4,
+    "longitude": -99.1,
+    "altitude": 0,
+    "speed": 0,
+    "course": 0,
+    "accuracy": 0,
+    "attributes": { "battery": 3.85, "charge": true, "ignition": false }
+  },
+  "device": {
+    "id": 9,
+    "name": "GT06",
+    "uniqueId": "864895030000001",
+    "status": "online",
+    "lastUpdate": "2026-09-26T18:05:01.000+00:00"
+  }
+}

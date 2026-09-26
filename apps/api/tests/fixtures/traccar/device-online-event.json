@@ -1,0 +1,11 @@
+{
+  "event": {
+    "id": 55,
+    "type": "deviceOnline",
+    "eventTime": "2026-09-26T18:10:00.000+00:00",
+    "deviceId": 9,
+    "positionId": 0,
+    "attributes": {}
+  },
+  "device": { "id": 9, "name": "GT06", "uniqueId": "864895030000001", "status": "online" }
+}

@@ -1,0 +1,26 @@
+{
+  "position": {
+    "id": 101,
+    "deviceId": 7,
+    "protocol": "osmand",
+    "serverTime": "2026-09-26T18:00:02.000+00:00",
+    "deviceTime": "2026-09-26T18:00:00.000+00:00",
+    "fixTime": "2026-09-26T18:00:00.000+00:00",
+    "outdated": false,
+    "valid": true,
+    "latitude": 19.4326,
+    "longitude": -99.1332,
+    "altitude": 2240,
+    "speed": 2.7,
+    "course": 90,
+    "accuracy": 12.5,
+    "attributes": { "batteryLevel": 87, "charge": false, "distance": 0, "motion": true }
+  },
+  "device": {
+    "id": 7,
+    "name": "Celular de prueba",
+    "uniqueId": "123456",
+    "status": "online",
+    "lastUpdate": "2026-09-26T18:00:02.000+00:00"
+  }
+}
